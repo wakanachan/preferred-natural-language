@@ -8,7 +8,7 @@ A cross-platform natural language preference detection tool for AI assistants, s
 
 ## 🌐 Languages
 
-- 🇺🇸 **[English (United States)](README.md)**
+- 🇺🇸 **English** ← Current
 - 🇨🇳 **[简体中文](README.zh.md)**
 
 ## ✨ Features

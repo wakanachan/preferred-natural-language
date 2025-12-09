@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "main": "dist/cli.js",
+  "bin": {
+    "preferred-natural-language-mcp": "dist/mcp-server.js"
+  },
   "description": "Claude Code plugin for Preferred Natural Language detection",
   "keywords": ["claude-code", "plugin", "language", "detection", "natural-language"],
   "author": "Preferred Natural Language",
@@ -15,7 +18,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@preferred-natural-language/shared": "file:../shared"
+    "@preferred-natural-language/shared": "file:../shared",
+    "@modelcontextprotocol/sdk": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -27,6 +31,7 @@
   },
   "files": [
     "dist/**/*",
-    "plugin.json"
+    "plugin.json",
+    ".mcp.json"
   ]
 }

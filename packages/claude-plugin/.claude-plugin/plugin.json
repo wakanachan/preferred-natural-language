@@ -1,0 +1,8 @@
+{
+  "name": "preferred-natural-language",
+  "version": "1.0.0",
+  "description": "交互式语言检测和配置工具 - 支持 70+ 种语言的自动检测与配置",
+  "author": {
+    "name": "Preferred Natural Language Team"
+  }
+}
