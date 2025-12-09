@@ -1,0 +1,144 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0, v1.0.1, etc.
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: Publish Packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update package versions
+        run: |
+          # Update version in all packages
+          npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --workspaces
+
+      - name: Publish shared package
+        run: npm publish --workspace=@preferred-natural-language/shared --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Claude plugin
+        run: npm publish --workspace=@preferred-natural-language/claude-plugin --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Gemini extension
+        run: npm publish --workspace=@preferred-natural-language/gemini-extension --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+  docker-publish:
+    name: Publish Docker Images
+    runs-on: ubuntu-latest
+    needs: publish
+
+    strategy:
+      matrix:
+        package: [shared, claude-plugin, gemini-extension]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./packages/${{ matrix.package }}/Dockerfile
+          push: true
+          tags: |
+            preferred-natural-language/${{ matrix.package }}:latest
+            preferred-natural-language/${{ matrix.package }}:${{ steps.version.outputs.VERSION }}
+          labels: |
+            org.opencontainers.image.title=${{ matrix.package }}
+            org.opencontainers.image.description=Preferred Natural Language Detection - ${{ matrix.package }}
+            org.opencontainers.image.url=https://github.com/your-username/preferred-natural-language
+            org.opencontainers.image.source=https://github.com/your-username/preferred-natural-language
+            org.opencontainers.image.version=${{ steps.version.outputs.VERSION }}
+
+  notify:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [publish, docker-publish]
+    if: always()
+
+    steps:
+      - name: Notify Discord on success
+        if: needs.publish.result == 'success'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "🚀 New Release Published!"
+          description: |
+            Preferred Natural Language v${{ github.ref_name }} has been published!
+
+            **Published Packages:**
+            - ✅ @preferred-natural-language/shared
+            - ✅ @preferred-natural-language/claude-plugin
+            - ✅ @preferred-natural-language/gemini-extension
+
+            **Docker Images:**
+            - ✅ preferred-natural-language/shared
+            - ✅ preferred-natural-language/claude-plugin
+            - ✅ preferred-natural-language/gemini-extension
+
+      - name: Notify Discord on failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ Release Failed!"
+          description: |
+            Preferred Natural Language v${{ github.ref_name }} failed to publish.
+
+            Please check the GitHub Actions logs for details.
