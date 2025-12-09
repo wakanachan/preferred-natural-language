@@ -1,0 +1,25 @@
+# Set default line ending to LF for all files
+* text=auto eol=lf
+
+# Specific file types that should always use LF
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# Generated files
+*.d.ts text eol=lf
+*.js.map text eol=lf
+*.tsbuildinfo text eol=lf
