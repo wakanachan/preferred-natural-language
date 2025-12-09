@@ -49,6 +49,9 @@ tmp/
 temp/
 *.tmp
 
+# Development tools
+tools/
+
 # Configuration files with sensitive data
 .preferred-language.json
 .preferred-language.json.backup
