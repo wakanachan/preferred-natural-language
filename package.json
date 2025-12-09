@@ -2,22 +2,59 @@
   "name": "preferred-natural-language",
   "version": "1.0.0",
   "type": "module",
+  "description": "Multi-platform natural language detection for AI assistants",
+  "keywords": ["natural-language", "detection", "claude-code", "gemini", "mcp", "language-preference"],
+  "author": "Preferred Natural Language",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "npm run build:shared && npm run build:claude && npm run build:mcp",
-    "build:shared": "tsc -p tsconfig.shared.json",
-    "build:claude": "tsc -p tsconfig.claude.json",
-    "build:mcp": "cd mcpserver && npm run build",
+    "build": "npm run build:shared && npm run build:claude && npm run build:gemini",
+    "build:shared": "npm run build --workspace=@preferred-natural-language/shared",
+    "build:claude": "npm run build --workspace=@preferred-natural-language/claude-plugin",
+    "build:gemini": "npm run build --workspace=@preferred-natural-language/gemini-extension",
     "build:all": "npm run build",
-    "clean": "rm -rf shared/dist && rm -rf dist && cd mcpserver && npm run clean",
-    "dev:claude": "npm run build:shared && tsc -p tsconfig.claude.json --watch",
-    "dev:mcp": "cd mcpserver && npm run watch",
-    "dev:shared": "tsc -p tsconfig.shared.json --watch"
+    "clean": "npm run clean --workspaces",
+    "test": "jest",
+    "test:unit": "jest --config jest.unit.config.ts",
+    "test:integration": "jest --config jest.integration.config.ts",
+    "test:e2e": "jest --config jest.e2e.config.ts",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:pr": "npm run test:unit && npm run test:integration",
+    "test:slow": "npm run test:e2e",
+    "test:all": "npm-run-all test:unit test:integration test:e2e",
+    "dev:claude": "npm run dev --workspace=@preferred-natural-language/claude-plugin",
+    "dev:gemini": "npm run dev --workspace=@preferred-natural-language/gemini-extension",
+    "dev:shared": "npm run dev --workspace=@preferred-natural-language/shared",
+    "install:all": "npm install && npm install --workspaces",
+    "test:performance": "echo 'Performance tests not implemented yet' && exit 0",
+    "lint": "echo 'Linting not configured yet' && exit 0",
+    "format": "echo 'Formatting not configured yet' && exit 0",
+    "format:check": "echo 'Format check not configured yet' && exit 0",
+    "type-check": "echo 'Type checking not configured yet' && exit 0",
+    "size-limit": "echo 'Size limit not configured yet' && exit 0",
+    "complexity-report": "echo 'Complexity report not implemented yet' && exit 0",
+    "build:docs": "echo 'Documentation build not implemented yet' && exit 0",
+    "publish": "npm publish --workspaces --if-present --access public"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.6.0"
+    "@types/jest": "^29.5.0",
+    "typescript": "^5.6.0",
+    "jest": "^29.5.0",
+    "jest-junit": "^16.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.2",
+    "jest-mock": "^29.5.0",
+    "memfs": "^4.2.0",
+    "cross-env": "^7.0.3",
+    "npm-run-all": "^4.1.5"
   },
-  "dependencies": {
-    "os-locale": "^6.0.2"
+  "jest": {
+    "transform": {},
+    "extensionsToTreatAsEsm": [".ts"]
   }
 }

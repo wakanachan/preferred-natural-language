@@ -6,14 +6,11 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Build output
-mcpserver/dist/
-*.js
-*.js.map
-*.d.ts
-*.d.ts.map
-
-# But keep the compiled output in dist/
-!mcpserver/dist/
+dist/
+packages/*/dist/
+packages/*/src/**/*.js
+packages/*/src/**/*.js.map
+packages/*/src/**/*.d.ts
 
 # TypeScript cache
 *.tsbuildinfo
@@ -23,13 +20,15 @@ mcpserver/dist/
 .env.local
 .env.*.local
 
-# IDE and editors
+# IDE, editors and AI Agents
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
+.claude/
+.gemini/
 
 # OS files
 Thumbs.db
@@ -42,6 +41,8 @@ logs/
 # Testing
 coverage/
 .nyc_output/
+.jest/
+test-results/
 
 # Temporary files
 tmp/
@@ -50,6 +51,7 @@ temp/
 
 # Configuration files with sensitive data
 .preferred-language.json
+.preferred-language.json.backup
 *.local.json
 
 # Debug
@@ -58,3 +60,20 @@ yarn-debug.log*
 
 # Build tools
 .cache/
+
+# Package manager lock files (keep one, ignore others based on your preference)
+# Keep npm
+# yarn.lock
+# pnpm-lock.yaml
+
+# Runtime files
+*.pid
+*.seed
+*.pid.lock
+
+# Profiling
+*.cpuprofile
+
+# Backup files
+*.bak
+*.backup

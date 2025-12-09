@@ -1,0 +1,36 @@
+{
+  "name": "@preferred-natural-language/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "Shared core logic for Preferred Natural Language detection",
+  "keywords": ["language", "detection", "natural-language", "i18n"],
+  "author": "Preferred Natural Language",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "os-locale": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.6.0",
+    "@types/jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "memfs": "^4.2.0"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/preferred-natural-language/preferred-natural-language.git"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "preferred-natural-language",
+  "version": "1.0.0",
+  "entryPoint": "./dist/cli.js",
+  "apiVersion": "2025.1",
+  "permissions": [
+    "file-system",
+    "environment"
+  ],
+  "metadata": {
+    "name": "Preferred Natural Language",
+    "description": "交互式语言检测和配置工具"
+  }
+}
