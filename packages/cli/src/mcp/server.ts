@@ -51,21 +51,42 @@ async function main() {
       mimeType: 'application/json'
     },
     async (uri) => {
-      return {
-        contents: [
-          {
-            uri: uri.toString(),
-            mimeType: 'application/json',
-            text: JSON.stringify({
-              language: languageResult.language,
-              languageName: SUPPORTED_LANGUAGES[languageResult.language] || languageResult.language,
-              source: languageResult.source,
-              confidence: languageResult.confidence,
-              detectedAt: new Date().toISOString()
-            }, null, 2)
-          }
-        ]
-      };
+      try {
+        return {
+          contents: [
+            {
+              uri: uri.toString(),
+              mimeType: 'application/json',
+              text: JSON.stringify({
+                language: languageResult.language,
+                languageName: SUPPORTED_LANGUAGES[languageResult.language] || languageResult.language,
+                source: languageResult.source,
+                confidence: languageResult.confidence,
+                detectedAt: new Date().toISOString()
+              }, null, 2)
+            }
+          ]
+        };
+      } catch (error: any) {
+        console.error('[MCP Resource] Error providing language preference:', error);
+        // Return fallback data
+        return {
+          contents: [
+            {
+              uri: uri.toString(),
+              mimeType: 'application/json',
+              text: JSON.stringify({
+                language: 'en-US',
+                languageName: 'English (United States)',
+                source: 'fallback',
+                confidence: 'low',
+                error: error.message,
+                detectedAt: new Date().toISOString()
+              }, null, 2)
+            }
+          ]
+        };
+      }
     }
   );
 
@@ -76,17 +97,33 @@ async function main() {
       description: 'Instructs the AI to communicate in the user\'s preferred language'
     },
     async () => {
-      return {
-        messages: [
-          {
-            role: 'user',
-            content: {
-              type: 'text',
-              text: generateLanguagePrompt(languageResult)
+      try {
+        return {
+          messages: [
+            {
+              role: 'user',
+              content: {
+                type: 'text',
+                text: generateLanguagePrompt(languageResult)
+              }
             }
-          }
-        ]
-      };
+          ]
+        };
+      } catch (error: any) {
+        console.error('[MCP Prompt] Error generating language prompt:', error);
+        // Return fallback prompt
+        return {
+          messages: [
+            {
+              role: 'user',
+              content: {
+                type: 'text',
+                text: 'Please communicate with the user in English.'
+              }
+            }
+          ]
+        };
+      }
     }
   );
 
@@ -101,24 +138,47 @@ async function main() {
       } as any
     },
     async () => {
-      // Re-detect in case settings changed
-      const freshResult = await detector.detect();
-      const languageName = SUPPORTED_LANGUAGES[freshResult.language] || freshResult.language;
+      try {
+        // Re-detect in case settings changed
+        const freshResult = await detector.detect();
+        const languageName = SUPPORTED_LANGUAGES[freshResult.language] || freshResult.language;
 
-      return {
-        content: [
-          {
-            type: 'text' as const,
-            text: JSON.stringify({
-              language: freshResult.language,
-              languageName: languageName,
-              source: freshResult.source,
-              confidence: freshResult.confidence,
-              prompt: generateLanguagePrompt(freshResult)
-            }, null, 2)
-          }
-        ]
-      };
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                language: freshResult.language,
+                languageName: languageName,
+                source: freshResult.source,
+                confidence: freshResult.confidence,
+                prompt: generateLanguagePrompt(freshResult)
+              }, null, 2)
+            }
+          ]
+        };
+      } catch (error: any) {
+        console.error('[MCP Tool: detect-language] Error detecting language:', error);
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                success: false,
+                error: error.message,
+                message: 'Failed to detect language preference',
+                fallback: {
+                  language: 'en-US',
+                  languageName: 'English (United States)',
+                  source: 'fallback',
+                  confidence: 'low'
+                }
+              }, null, 2)
+            }
+          ],
+          isError: true
+        };
+      }
     }
   );
 
@@ -215,22 +275,44 @@ async function main() {
       } as any
     },
     async () => {
-      // Convert SUPPORTED_LANGUAGES object to sorted array
-      const languageList = Object.entries(SUPPORTED_LANGUAGES)
-        .map(([code, name]) => ({ code, name }))
-        .sort((a, b) => a.name.localeCompare(b.name));
+      try {
+        // Validate SUPPORTED_LANGUAGES is available
+        if (!SUPPORTED_LANGUAGES || typeof SUPPORTED_LANGUAGES !== 'object') {
+          throw new Error('SUPPORTED_LANGUAGES is not available');
+        }
 
-      return {
-        content: [
-          {
-            type: 'text' as const,
-            text: JSON.stringify({
-              total: languageList.length,
-              languages: languageList
-            }, null, 2)
-          }
-        ]
-      };
+        // Convert SUPPORTED_LANGUAGES object to sorted array
+        const languageList = Object.entries(SUPPORTED_LANGUAGES)
+          .map(([code, name]) => ({ code, name }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                total: languageList.length,
+                languages: languageList
+              }, null, 2)
+            }
+          ]
+        };
+      } catch (error: any) {
+        console.error('[MCP Tool: list-languages] Error listing languages:', error);
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                success: false,
+                error: error.message,
+                message: 'Failed to retrieve list of supported languages'
+              }, null, 2)
+            }
+          ],
+          isError: true
+        };
+      }
     }
   );
 

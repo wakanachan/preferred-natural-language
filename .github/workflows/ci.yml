@@ -80,17 +80,11 @@ jobs:
         run: npm run build
 
       - name: Publish to npm
-        run: npm run publish --workspace=@preferred-natural-language/shared
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish Claude plugin
-        run: npm run publish --workspace=@preferred-natural-language/claude-plugin
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish Gemini extension
-        run: npm run publish --workspace=@preferred-natural-language/gemini-extension
+        run: |
+          npm publish --workspace=@preferred-natural-language/shared --access public
+          npm publish --workspace=@preferred-natural-language/cli --access public
+          npm publish --workspace=@preferred-natural-language/claude-plugin --access public
+          npm publish --workspace=@preferred-natural-language/gemini-extension --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

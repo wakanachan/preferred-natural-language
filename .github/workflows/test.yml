@@ -155,12 +155,10 @@ jobs:
 
       - name: Test CLI commands on ${{ matrix.os }}
         run: |
-          npm run build:claude
-          npm run build:gemini
-
-          # Test language detection works
-          node packages/gemini-extension/dist/index.js --help || true
-          node packages/claude-plugin/dist/cli.js --help || true
+          # Test CLI package built successfully
+          node packages/cli/dist/cli/index.js --version
+          node packages/cli/dist/cli/index.js detect
+          node packages/cli/dist/cli/index.js list
 
   test-results:
     name: Test Results

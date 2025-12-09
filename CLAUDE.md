@@ -14,14 +14,26 @@ This is a **monorepo** for a cross-platform natural language preference detectio
   - Exports `LanguageDetector` class and type definitions
   - Platform-agnostic and reusable
 
-- `packages/claude-plugin/` - **Claude Code plugin** (`@preferred-natural-language/claude-plugin`)
-  - CLI commands: detect, set, show, list
+- `packages/cli/` - **CLI package + MCP server** (`@preferred-natural-language/cli`)
+  - **CLI commands**: detect, set, show, list (Commander.js)
+  - **i18n system**: 10 languages (en, zh-CN, ja, ko, ru, pt, es, fr, de) + bilingual fallback
+  - **MCP server**: Provides Resource (`language://preference`), Prompt, and Tools
+  - **Utilities**: Language display formatting with box drawing characters
   - Depends on `@preferred-natural-language/shared`
 
-- `packages/gemini-extension/` - **Gemini CLI MCP extension** (`@preferred-natural-language/gemini-extension`)
-  - MCP server implementation for Gemini CLI
-  - Exposes language detection as MCP resources and prompts
-  - Depends on `@preferred-natural-language/shared`
+- `packages/claude-plugin/` - **Claude Code plugin** (`@preferred-natural-language/claude-plugin`)
+  - **Lightweight wrapper** - delegates to CLI package
+  - Slash commands (`.md` files) instruct AI to use MCP tools
+  - `.mcp.json` configures MCP server startup
+  - `scripts/start-mcp.js` - Smart launcher (global install → npx fallback)
+  - No source code - pure configuration layer
+
+- `packages/gemini-extension/` - **Gemini CLI extension** (`@preferred-natural-language/gemini-extension`)
+  - **Lightweight wrapper** - delegates to CLI package
+  - `GEMINI.md` - Context file for auto-language detection at session start
+  - `gemini-extension.json` - Extension metadata and MCP config
+  - `scripts/start-mcp.js` - Smart launcher (same as Claude plugin)
+  - No source code - pure configuration layer
 
 ### Detection Priority Chain (Important!)
 
@@ -36,20 +48,81 @@ The language detection follows a strict 5-level priority:
 
 This priority order is critical and is enforced in `packages/shared/src/languageDetector.ts:15-43`.
 
+### MCP Integration (Model Context Protocol)
+
+The CLI package includes a comprehensive MCP server implementation (`packages/cli/src/mcp/server.ts`) that enables automatic language detection in AI assistants.
+
+#### MCP Capabilities
+
+**Resource** (auto-loaded at session start):
+- `language://preference` - Returns user's language preference as JSON
+  ```json
+  {
+    "language": "zh-CN",
+    "languageName": "简体中文 (Simplified Chinese)",
+    "source": "os-locale",
+    "confidence": "high"
+  }
+  ```
+- **Resource Subscription**: Server declares `subscribe: true, listChanged: true` for auto-updates
+
+**Prompt**:
+- `use-preferred-language` - Generates AI instruction to communicate in detected language
+
+**Tools** (callable by AI):
+- `detect-language` - Detect current language preference
+- `set-language(language, fallback?)` - Create/update `.preferred-language.json` with validation
+- `list-languages()` - List all 70+ supported languages and regional variants
+
+#### Auto-Language Detection
+
+Both Claude and Gemini plugins enable automatic language detection:
+
+1. **Claude Code**: `plugin.json` description instructs AI to access `language://preference` Resource at session start
+2. **Gemini CLI**: `GEMINI.md` context file provides explicit instructions for AI to check language preference
+3. **MCP Resource Subscription**: Server notifies clients when language preference changes
+
+**Implementation**: The MCP server is started by smart launchers (`scripts/start-mcp.js`) that try global install first, then fall back to `npx @preferred-natural-language/cli mcp`.
+
+### i18n System
+
+The CLI package includes a complete internationalization system (`packages/cli/src/i18n/`) supporting 10 languages.
+
+#### Supported i18n Languages
+- English (`en`, `en-US`, `en-GB`)
+- Simplified Chinese (`zh-CN`)
+- Japanese (`ja-JP`)
+- Korean (`ko-KR`)
+- Russian (`ru-RU`)
+- Portuguese (`pt-BR`, `pt-PT`)
+- Spanish (`es-ES`)
+- French (`fr-FR`)
+- German (`de-DE`)
+
+#### Features
+- **Automatic locale selection**: Based on detected language preference
+- **Parameter substitution**: `i18n.t('detect.result', { languageName: '简体中文', language: 'zh-CN' })`
+- **Bilingual fallback**: When detection confidence is "low", CLI outputs in both detected language and English
+- **Graceful fallback**: Unsupported locales default to English
+
+**Implementation**: Locale files are in `packages/cli/src/i18n/locales/`, with `I18n` class handling message lookup and parameter replacement.
+
 ## Development Commands
 
 ### Building
 ```bash
-# Build all packages (runs shared -> claude -> gemini in order)
+# Build all packages (runs shared -> cli in order)
 npm run build
 
 # Build individual packages
-npm run build:shared
-npm run build:claude
-npm run build:gemini
+npm run build:shared       # Build core detection library
+npm run build:cli          # Build CLI package (includes MCP server)
 ```
 
-**Important**: Always build `shared` package first as it's a dependency for the other two packages.
+**Important**:
+- Always build `shared` package first as it's a dependency for the CLI package
+- Claude/Gemini plugins are lightweight configuration layers - no build required
+- The build process uses TypeScript with ES2022 modules
 
 ### Testing
 
@@ -76,30 +149,50 @@ npm run test:pr            # unit + integration only (fast)
 ```
 
 ### Testing Strategy
-- **Unit tests**: Located in `packages/*/__tests__/` - test individual functions and classes
-- **Integration tests**: Test package interactions
-- **E2E tests**: Test complete workflows across packages
-- **Coverage requirements**: 85%+ for functions, lines, statements; 80%+ for branches
-- Jest is configured with ES modules support (`type: "module"` in package.json)
+- **Unit tests**: Located in `packages/*/__tests__/unit/` - test individual functions and classes
+- **Integration tests**: Located in `packages/*/__tests__/integration/` - test CLI workflow and MCP integration
+- **E2E tests**: Located in `packages/*/__tests__/e2e/` - test complete workflows across packages
+- **Test infrastructure**:
+  - `__tests__/helpers/mockFactory.ts` - Centralized mock creation for LanguageDetector and I18n
+  - `__tests__/setup.ts` - Test environment setup and teardown
+  - `__mocks__/@preferred-natural-language/shared.ts` - Manual mock for workspace package isolation
+- **Current coverage** (Phase 2B completed):
+  - **65+ test cases** covering commands, i18n, utilities, and CLI integration
+  - **100% statement coverage** for tested modules
+  - **72.72% branch coverage** (branches: 40% global, higher for critical paths)
+  - **100% function and line coverage** for core functionality
+- **Coverage requirements**: 85%+ for functions, lines, statements; 80%+ for branches (target for Phase 4)
+- Jest is configured with ES modules support (`preset: 'ts-jest/presets/default-esm'` in jest.config.ts)
 
 ### Development Mode
 ```bash
 # Watch mode for development
 npm run dev:shared    # Watch and rebuild shared package
-npm run dev:claude    # Watch and rebuild Claude plugin
-npm run dev:gemini    # Watch and rebuild Gemini extension
+npm run dev:cli       # Watch and rebuild CLI package
+
+# Run CLI locally without global install
+node packages/cli/dist/cli/index.js detect
+node packages/cli/dist/cli/index.js --help
+
+# Test MCP server locally
+node packages/cli/dist/mcp/server.js
+# Or use the CLI package's mcp command
+npx @preferred-natural-language/cli mcp
 ```
 
 ### Running a Single Test
 ```bash
 # Run a specific test file
-npx jest packages/shared/__tests__/languageDetector.test.ts
+npx jest packages/cli/__tests__/unit/commands/detect.test.ts
 
 # Run tests matching a pattern
 npx jest --testNamePattern="should detect from config file"
 
 # Run a specific test suite in watch mode
-npx jest packages/shared/__tests__/languageDetector.test.ts --watch
+npx jest packages/cli/__tests__/unit/i18n/i18n.test.ts --watch
+
+# Run CLI integration tests
+npx jest packages/cli/__tests__/integration/cli.integration.test.ts
 ```
 
 ## Key Technical Details
@@ -140,6 +233,35 @@ The core detection logic is in `packages/shared/src/languageDetector.ts`. Key me
 
 **Never fail**: The detector always returns a result, even on errors (falls back to `en-US`).
 
+### MCP Server Implementation
+
+The MCP server is in `packages/cli/src/mcp/server.ts`. Key features:
+
+- **Resource Registration**: `language://preference` with auto-subscription capability
+- **Tool Validation**: `set-language` tool validates against `SUPPORTED_LANGUAGES` from shared package
+- **Error Handling**: Tools return `{ success: false, error: string, message: string }` on validation failures
+- **JSON Output**: All tools return JSON for machine-readable responses
+- **Stdio Communication**: Server uses `stdio` transport for integration with Claude/Gemini
+
+**Testing**: MCP integration tests will be in `packages/cli/__tests__/integration/mcp.integration.test.ts` (Phase 3B).
+
+### i18n Implementation
+
+The i18n system is in `packages/cli/src/i18n/`. Key classes:
+
+- **I18n class** (`index.ts`):
+  - Constructor: `new I18n(language: string, confidence: 'high' | 'medium' | 'low')`
+  - `t(key: string, params?: Record<string, string>)` - Translate with parameter substitution
+  - `isBilingual()` - Returns true when confidence is "low"
+  - Automatic locale loading from `locales/` directory
+
+- **Locale files** (`locales/{language}.json`):
+  - Nested JSON structure: `{ "detect": { "result": "..." } }`
+  - Parameter placeholders: `"Detected language: {{languageName}} ({{language}})"`
+  - Fallback chain: requested locale → base language (e.g., `en-US` → `en`) → English
+
+**Bilingual mode**: When confidence is "low", commands automatically output in both detected language and English to ensure understanding.
+
 ### Configuration File Format
 ```json
 {
@@ -153,10 +275,24 @@ File is searched in paths defined in `packages/shared/src/config.ts:CONFIG_SEARC
 ## Testing Best Practices
 
 1. **Mock external dependencies**: Use `jest.mock()` for `os-locale` and `fs` operations
-2. **Test isolation**: Each test should set up and tear down its environment (see `test/setup.ts`)
+2. **Test isolation**: Each test should set up and tear down its environment
 3. **Priority testing**: Always test that higher priority sources override lower priority ones
 4. **Error handling**: Test that errors don't crash detection, always return fallback
 5. **Concurrent requests**: Language detector must be safe for concurrent calls
+6. **i18n testing**:
+   - Test at least 3 languages (English, Chinese, and one other) for each message key
+   - Test parameter substitution with various values
+   - Test bilingual mode (low confidence) outputs both languages
+   - Test fallback behavior for unsupported locales
+7. **CLI integration testing**:
+   - Use `execAsync` to spawn actual CLI processes
+   - Test both stdout and stderr
+   - Verify exit codes for success and error cases
+   - Use 10-second timeouts for process spawning
+8. **Manual mocking for workspace packages**:
+   - Create manual mocks in `__mocks__/@preferred-natural-language/` for better isolation
+   - Manual mocks prevent shared package changes from breaking CLI tests
+   - Map mocks in `jest.config.ts` using `moduleNameMapper`
 
 ## Git Workflow
 
@@ -199,6 +335,28 @@ If workspace packages aren't linking:
 npm install          # At root
 npm run build:shared # Build shared package first
 ```
+
+### MCP Server Not Starting
+If the MCP server fails to start:
+1. Verify CLI package is installed globally: `npm list -g @preferred-natural-language/cli`
+2. Try using npx fallback: `npx @preferred-natural-language/cli mcp`
+3. Check MCP server logs in Claude/Gemini console
+4. Verify `scripts/start-mcp.js` has execute permissions
+
+### i18n Messages Not Loading
+If translations are not working:
+1. Ensure locale file exists in `packages/cli/src/i18n/locales/`
+2. Check locale file is valid JSON
+3. Verify message key exists in the locale file
+4. Rebuild CLI package: `npm run build:cli`
+5. Test with: `node packages/cli/dist/cli/index.js detect`
+
+### Jest ES Module Errors
+If Jest fails to parse ES modules:
+1. Ensure `jest.config.ts` uses `preset: 'ts-jest/presets/default-esm'`
+2. Check `package.json` has `"type": "module"`
+3. Create manual mocks in `__mocks__/` for workspace packages
+4. Clear Jest cache: `npx jest --clearCache`
 
 ## Package Publishing
 
