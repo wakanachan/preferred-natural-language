@@ -1,14 +1,15 @@
-# Preferred Natural Language - Gemini CLI Extension
+# Preferred Natural Language - Dual Platform Extension
 
-A Gemini CLI MCP (Model Context Protocol) extension that automatically detects your system's preferred natural language and instructs Gemini to communicate in that language.
+A dual-platform extension that automatically detects your system's preferred natural language. Works as both a **Gemini CLI MCP extension** and a **Claude Code plugin** with 95% code reuse.
 
 ## Features
 
+- **Dual Platform Support**: Works with both Gemini CLI (MCP) and Claude Code
 - **Automatic Language Detection**: Detects your preferred language from multiple sources
 - **Priority-Based Detection**: Uses a smart fallback chain for reliable detection
 - **Cross-Platform Support**: Works on Windows, macOS, and Linux
 - **Customizable**: Override detection with environment variables or config files
-- **MCP Integration**: Provides both Resource and Prompt capabilities
+- **95% Code Reuse**: Shared core logic ensures consistent behavior across platforms
 
 ## How It Works
 
@@ -53,6 +54,36 @@ The extension detects your preferred language using the following priority order
    ```
 
 3. The extension is now ready to use with Gemini
+
+## Platform-Specific Usage
+
+### Gemini CLI (MCP Extension)
+
+The MCP server provides these capabilities to Gemini:
+
+- **Resource**: `language://preference` - Returns JSON with language data
+- **Prompt**: `use-preferred-language` - Instructs AI to use detected language
+
+### Claude Code (Plugin)
+
+The Claude Code plugin provides interactive language management commands:
+
+```bash
+# Detect current language preference
+claude plugin preferred-natural-language detect
+
+# Set language preference
+claude plugin preferred-natural-language set zh-CN
+
+# Show detailed language information
+claude plugin preferred-natural-language show
+
+# List all supported languages
+claude plugin preferred-natural-language list
+
+# Show interactive configuration help
+claude plugin preferred-natural-language config
+```
 
 ## Configuration
 
@@ -152,20 +183,57 @@ This automatically tells Gemini:
 
 ```
 .
-├── gemini-extension.json          # Gemini extension configuration
-├── mcpserver/
-│   ├── package.json              # Dependencies and build scripts
-│   ├── tsconfig.json             # TypeScript configuration
+├── plugin.json                    # Claude Code plugin configuration
+├── gemini-extension.json         # Gemini CLI MCP configuration
+├── package.json                  # Root project dependencies and scripts
+├── src/                          # Claude Code plugin source
+│   ├── index.ts                  # Plugin main entry
+│   ├── cli.ts                    # Plugin implementation
+│   ├── commands/                 # Plugin commands
+│   │   ├── detect.ts             # Detect language
+│   │   ├── set.ts                # Set language
+│   │   ├── show.ts               # Show configuration
+│   │   └── list.ts               # List languages
+│   └── utils/                    # Plugin utilities
+│       └── languageDisplay.ts    # Display formatting
+├── shared/                       # Shared core logic
 │   ├── src/
-│   │   ├── index.ts              # MCP server entry point
-│   │   ├── languageDetector.ts   # Detection logic
-│   │   ├── types.ts              # TypeScript interfaces
-│   │   └── config.ts             # Configuration constants
-│   └── dist/                     # Compiled JavaScript (generated)
+│   │   ├── languageDetector.ts   # Language detection logic
+│   │   ├── types.ts              # Type definitions
+│   │   ├── config.ts             # Configuration constants
+│   │   └── languageNames.ts      # Language name mapping
+│   └── dist/                     # Shared compiled code
+├── mcpserver/                    # MCP server (Gemini CLI)
+│   ├── package.json              # MCP dependencies
+│   ├── tsconfig.json             # MCP TypeScript config
+│   ├── src/                      # MCP server source
+│   │   └── index.ts              # MCP server entry
+│   └── dist/                     # MCP compiled output
+├── dist/                         # Claude Code plugin compiled output
+├── tsconfig.json                 # Root TypeScript config
+├── tsconfig.shared.json          # Shared code build config
+├── tsconfig.claude.json          # Claude Code plugin build config
 └── README.md
 ```
 
 ### Build Commands
+
+```bash
+# Build everything
+npm run build
+
+# Build specific components
+npm run build:shared    # Build shared core code
+npm run build:claude    # Build Claude Code plugin
+npm run build:mcp       # Build MCP server
+
+# Development modes
+npm run dev:claude      # Watch mode for Claude Code plugin
+npm run dev:mcp         # Watch mode for MCP server
+npm run dev:shared      # Watch mode for shared code
+```
+
+### Platform-Specific Testing
 
 ```bash
 # Install dependencies
@@ -205,9 +273,35 @@ unset CLAUDE_CODE_NATURAL_LANGUAGE
 node mcpserver/dist/index.js
 ```
 
-You should see output like:
+**Test Claude Code Plugin:**
+```bash
+# Test detect command
+node -e "
+import('./dist/cli.js').then(module => {
+  const plugin = new module.PreferredNaturalLanguagePlugin();
+  plugin.initialize({}).then(() => {
+    plugin.execute('detect', []).then(console.log);
+  });
+});
+"
+
+# Test set command
+node -e "
+import('./dist/cli.js').then(module => {
+  const plugin = new module.PreferredNaturalLanguagePlugin();
+  plugin.initialize({}).then(() => {
+    plugin.execute('set', ['ja-JP']).then(console.log);
+  });
+});
+"
+```
+
+Expected output:
 ```
 [Preferred Natural Language] Detected: zh-CN (source: GEMINI_CLI_NATURAL_LANGUAGE, confidence: high)
+```
+```
+✅ 语言偏好已设置为: Japanese (ja-JP)
 ```
 
 ## Troubleshooting

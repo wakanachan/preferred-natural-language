@@ -1,54 +1,14 @@
 #!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { LanguageDetector } from './languageDetector.js';
-import type { LanguageDetectionResult } from './types.js';
-
-// Language code to human-readable name mapping
-const LANGUAGE_NAMES: Record<string, string> = {
-  'en': 'English',
-  'en-US': 'English (United States)',
-  'en-GB': 'English (United Kingdom)',
-  'zh': 'Chinese',
-  'zh-CN': 'Chinese (Simplified)',
-  'zh-TW': 'Chinese (Traditional)',
-  'zh-HK': 'Chinese (Hong Kong)',
-  'ja': 'Japanese',
-  'ja-JP': 'Japanese',
-  'es': 'Spanish',
-  'es-ES': 'Spanish (Spain)',
-  'es-MX': 'Spanish (Mexico)',
-  'fr': 'French',
-  'fr-FR': 'French (France)',
-  'de': 'German',
-  'de-DE': 'German (Germany)',
-  'ko': 'Korean',
-  'ko-KR': 'Korean',
-  'pt': 'Portuguese',
-  'pt-BR': 'Portuguese (Brazil)',
-  'pt-PT': 'Portuguese (Portugal)',
-  'ru': 'Russian',
-  'ru-RU': 'Russian',
-  'ar': 'Arabic',
-  'hi': 'Hindi',
-  'it': 'Italian',
-  'it-IT': 'Italian',
-  'nl': 'Dutch',
-  'nl-NL': 'Dutch',
-  'pl': 'Polish',
-  'pl-PL': 'Polish',
-  'tr': 'Turkish',
-  'tr-TR': 'Turkish',
-  'vi': 'Vietnamese',
-  'vi-VN': 'Vietnamese',
-  'th': 'Thai',
-  'th-TH': 'Thai'
-};
+import { LanguageDetector } from '../../shared/src/languageDetector.js';
+import type { LanguageDetectionResult } from '../../shared/src/types.js';
+import { SUPPORTED_LANGUAGES } from '../../shared/src/languageNames.js';
 
 function generateLanguagePrompt(result: LanguageDetectionResult): string {
   const fullLanguage = result.language;
   const baseLanguage = fullLanguage.split('-')[0];
-  const languageName = LANGUAGE_NAMES[fullLanguage] || LANGUAGE_NAMES[baseLanguage] || fullLanguage;
+  const languageName = SUPPORTED_LANGUAGES[fullLanguage] || SUPPORTED_LANGUAGES[baseLanguage] || fullLanguage;
 
   return `The user's preferred natural language is ${languageName} (${fullLanguage}).
 

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./shared/dist",
+    "declaration": true,
+    "sourceMap": true
+  },
+  "include": ["shared/src/**/*"],
+  "exclude": ["node_modules"]
+}
