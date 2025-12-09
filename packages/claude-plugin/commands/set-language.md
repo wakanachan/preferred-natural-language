@@ -2,13 +2,15 @@
 description: Set the preferred natural language for Claude Code
 ---
 
-Configure your preferred natural language by creating or updating the `.preferred-language.json` configuration file.
+Please use the MCP tool `set-language` to configure the user's preferred natural language.
 
-Usage: Specify a BCP-47 language code (e.g., zh-CN, en-US, ja-JP, ko-KR, fr-FR, de-DE, es-ES, pt-BR).
+**Parameters:**
+- `language` (required): BCP-47 language code (e.g., zh-CN, en-US, ja-JP, ko-KR, fr-FR, de-DE, es-ES, pt-BR)
+- `fallback` (optional): Fallback language code (defaults to en-US)
 
-This command will:
-- Create or update `.preferred-language.json` in the project root
-- Set the specified language as your preference
-- Configure a fallback language (en-US by default)
+**What this tool does:**
+- Creates or updates `.preferred-language.json` in the project root
+- Sets the specified language as the highest priority preference
+- Validates the language code against supported languages
 
-The configuration file will be used as the highest priority source for language detection.
+**Usage tip:** If you're unsure which language codes are supported, use the `/list-languages` command first to see all available options.

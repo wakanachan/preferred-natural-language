@@ -2,9 +2,9 @@
 description: List all supported languages and their codes
 ---
 
-Display a comprehensive list of all supported natural languages (70+ languages and regional variants).
+Please use the MCP tool `list-languages` to display all supported natural languages and their BCP-47 codes.
 
-The list includes popular languages such as:
+The tool will return a comprehensive list of 70+ languages and regional variants, including:
 - English variants (en-US, en-GB, en-CA, en-AU, etc.)
 - Chinese variants (zh-CN, zh-TW, zh-HK, etc.)
 - Japanese (ja-JP)
@@ -13,4 +13,4 @@ The list includes popular languages such as:
 - Middle Eastern languages (ar-EG, ar-SA, he-IL, etc.)
 - Asian languages (hi-IN, th-TH, vi-VN, id-ID, etc.)
 
-Each language is shown with its BCP-47 code and full display name.
+Please format the output in a user-friendly way (e.g., table or grouped list).

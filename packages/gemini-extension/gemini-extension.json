@@ -5,7 +5,7 @@
     "preferredNaturalLanguage": {
       "command": "node",
       "args": [
-        "${extensionPath}${/}mcpserver${/}dist${/}index.js"
+        "${extensionPath}${/}scripts${/}start-mcp.js"
       ],
       "cwd": "${extensionPath}"
     }

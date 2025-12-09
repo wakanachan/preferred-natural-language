@@ -3,6 +3,8 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-language/shared';
 import type { LanguageDetectionResult } from '@preferred-natural-language/shared';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 function generateLanguagePrompt(result: LanguageDetectionResult): string {
   const fullLanguage = result.language;
@@ -22,7 +24,7 @@ async function main() {
   const detector = new LanguageDetector();
   const languageResult = await detector.detect();
 
-  // Create MCP server
+  // Create MCP server with resource subscription capability
   const server = new McpServer(
     {
       name: 'preferred-natural-language',
@@ -30,7 +32,10 @@ async function main() {
     },
     {
       capabilities: {
-        resources: {},
+        resources: {
+          subscribe: true,
+          listChanged: true
+        },
         prompts: {},
         tools: {}
       }
@@ -110,6 +115,118 @@ async function main() {
               source: freshResult.source,
               confidence: freshResult.confidence,
               prompt: generateLanguagePrompt(freshResult)
+            }, null, 2)
+          }
+        ]
+      };
+    }
+  );
+
+  // Register MCP Tool - set language preference
+  server.registerTool(
+    'set-language',
+    {
+      description: 'Set the preferred natural language by creating/updating .preferred-language.json',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          language: {
+            type: 'string',
+            description: 'BCP-47 language code (e.g., zh-CN, en-US, ja-JP, ko-KR, fr-FR, de-DE, es-ES, pt-BR)'
+          },
+          fallback: {
+            type: 'string',
+            description: 'Optional fallback language code (defaults to en-US)'
+          }
+        },
+        required: ['language']
+      } as any
+    },
+    async (args: any) => {
+      const { language, fallback = 'en-US' } = args;
+
+      // Validate language code
+      const baseLanguage = language.split('-')[0];
+      if (!SUPPORTED_LANGUAGES[language] && !SUPPORTED_LANGUAGES[baseLanguage]) {
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                success: false,
+                error: `Unsupported language: ${language}`,
+                message: 'Use list-languages tool to see all supported languages'
+              }, null, 2)
+            }
+          ],
+          isError: true
+        };
+      }
+
+      // Write configuration file
+      const configPath = path.join(process.cwd(), '.preferred-language.json');
+      const config = { language, fallback };
+
+      try {
+        await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
+        const languageName = SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES[baseLanguage] || language;
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                success: true,
+                language: language,
+                languageName: languageName,
+                fallback: fallback,
+                configPath: configPath,
+                message: `Language preference set to ${languageName} (${language})`
+              }, null, 2)
+            }
+          ]
+        };
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({
+                success: false,
+                error: error.message,
+                message: 'Failed to write configuration file'
+              }, null, 2)
+            }
+          ],
+          isError: true
+        };
+      }
+    }
+  );
+
+  // Register MCP Tool - list supported languages
+  server.registerTool(
+    'list-languages',
+    {
+      description: 'List all supported languages (70+ languages and regional variants)',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      } as any
+    },
+    async () => {
+      // Convert SUPPORTED_LANGUAGES object to sorted array
+      const languageList = Object.entries(SUPPORTED_LANGUAGES)
+        .map(([code, name]) => ({ code, name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      return {
+        content: [
+          {
+            type: 'text' as const,
+            text: JSON.stringify({
+              total: languageList.length,
+              languages: languageList
             }, null, 2)
           }
         ]
