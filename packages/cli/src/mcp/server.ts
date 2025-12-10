@@ -5,6 +5,7 @@ import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-langua
 import type { LanguageDetectionResult } from '@preferred-natural-language/shared';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { z } from 'zod';
 
 function generateLanguagePrompt(result: LanguageDetectionResult): string {
   const fullLanguage = result.language;
@@ -50,7 +51,7 @@ async function main() {
       description: 'User\'s preferred natural language for interactions',
       mimeType: 'application/json'
     },
-    async (uri) => {
+    async (uri: any, _extra: any) => {
       try {
         return {
           contents: [
@@ -96,7 +97,7 @@ async function main() {
     {
       description: 'Instructs the AI to communicate in the user\'s preferred language'
     },
-    async () => {
+    async (_extra: any) => {
       try {
         return {
           messages: [
@@ -132,12 +133,9 @@ async function main() {
     'detect-language',
     {
       description: 'Detect the user\'s preferred natural language',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-      } as any
+      inputSchema: {}
     },
-    async () => {
+    async (_args: any, _extra: any) => {
       try {
         // Re-detect in case settings changed
         const freshResult = await detector.detect();
@@ -188,21 +186,11 @@ async function main() {
     {
       description: 'Set the preferred natural language by creating/updating .preferred-language.json',
       inputSchema: {
-        type: 'object',
-        properties: {
-          language: {
-            type: 'string',
-            description: 'BCP-47 language code (e.g., zh-CN, en-US, ja-JP, ko-KR, fr-FR, de-DE, es-ES, pt-BR)'
-          },
-          fallback: {
-            type: 'string',
-            description: 'Optional fallback language code (defaults to en-US)'
-          }
-        },
-        required: ['language']
-      } as any
+        language: z.string().describe('BCP-47 language code (e.g., zh-CN, en-US, ja-JP, ko-KR, fr-FR, de-DE, es-ES, pt-BR)'),
+        fallback: z.string().optional().describe('Optional fallback language code (defaults to en-US)')
+      }
     },
-    async (args: any) => {
+    async (args: any, _extra: any) => {
       const { language, fallback = 'en-US' } = args;
 
       // Validate language code
@@ -269,12 +257,9 @@ async function main() {
     'list-languages',
     {
       description: 'List all supported languages (70+ languages and regional variants)',
-      inputSchema: {
-        type: 'object',
-        properties: {},
-      } as any
+      inputSchema: {}
     },
-    async () => {
+    async (_args: any, _extra: any) => {
       try {
         // Validate SUPPORTED_LANGUAGES is available
         if (!SUPPORTED_LANGUAGES || typeof SUPPORTED_LANGUAGES !== 'object') {
