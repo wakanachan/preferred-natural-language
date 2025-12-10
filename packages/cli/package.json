@@ -1,6 +1,6 @@
 {
   "name": "@preferred-natural-language/cli",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "CLI tool and MCP server for Preferred Natural Language detection",
   "keywords": ["cli", "language", "detection", "natural-language", "mcp", "model-context-protocol"],

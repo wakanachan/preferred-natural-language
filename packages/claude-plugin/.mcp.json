@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "preferred-natural-language": {
+    "pnl-mcp": {
       "command": "node",
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/scripts/start-mcp.js"

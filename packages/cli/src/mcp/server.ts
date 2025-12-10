@@ -29,7 +29,7 @@ async function main() {
   const server = new McpServer(
     {
       name: 'preferred-natural-language',
-      version: '1.0.0'
+      version: '2.0.0'
     },
     {
       capabilities: {

@@ -311,6 +311,82 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 
 Prefix types: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`
 
+### Version Management
+
+This project follows **Semantic Versioning 2.0.0** (https://semver.org/):
+
+**Version Format**: `MAJOR.MINOR.PATCH`
+
+**Version Increment Rules**:
+- **MAJOR** (X.0.0): Increment when making incompatible API changes or major architecture refactoring
+  - Examples: Breaking API changes, complete architecture overhaul, incompatible dependency updates
+- **MINOR** (0.X.0): Increment when adding functionality in a backward compatible manner
+  - Examples: New features, new command/tool additions, significant enhancements
+- **PATCH** (0.0.X): Increment when making backward compatible bug fixes
+  - Examples: Bug fixes, documentation updates, minor improvements
+
+**Version History**:
+- **1.0.0** (Initial Release): Basic project structure with language detection
+- **2.0.0** (Current): Major architecture refactoring and feature additions
+  - Complete Monorepo migration with npm workspaces
+  - New CLI package with i18n system (10 languages)
+  - MCP server implementation with Resource/Prompt/Tools
+  - Lightweight plugin layer for Claude Code and Gemini CLI
+  - Comprehensive test coverage (99 tests, 85%+ coverage)
+  - Gemini CLI extension slash commands
+  - Bug fixes: MCP inputSchema format
+
+**When to Update Versions**:
+1. Update version in all `package.json` files simultaneously:
+   - Root `package.json`
+   - `packages/shared/package.json`
+   - `packages/cli/package.json`
+   - `packages/claude-plugin/package.json`
+   - `packages/gemini-extension/package.json`
+   - `packages/gemini-extension/gemini-extension.json`
+
+2. Update `peerDependencies` in plugin packages to match CLI version
+
+3. Update this CLAUDE.md file's "Version History" section with:
+   - Version number
+   - Release date
+   - Summary of changes
+   - Breaking changes (if MAJOR version)
+
+4. Create a git tag after version update:
+   ```bash
+   git tag -a v2.0.0 -m "Release version 2.0.0"
+   git push origin v2.0.0
+   ```
+
+**Example Version Update Workflow**:
+```bash
+# 1. Update all package.json files (MAJOR version bump example)
+# Edit: package.json, packages/*/package.json, gemini-extension.json
+# Change version from 2.0.0 -> 3.0.0
+# Update peerDependencies: "^2.0.0" -> "^3.0.0"
+
+# 2. Update CLAUDE.md Version History
+# Add entry for v3.0.0 with changes
+
+# 3. Commit version update
+git add -A
+git commit -m "chore: bump version to 3.0.0
+
+- 更新所有包版本号
+- 更新 peerDependencies
+- 更新版本历史
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+
+# 4. Create and push tag
+git tag -a v3.0.0 -m "Release version 3.0.0"
+git push origin v3.0.0
+git push
+```
+
 ### Line Endings
 - **Always use LF** (not CRLF)
 - Enforced via `.gitattributes`

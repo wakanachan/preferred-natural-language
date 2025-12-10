@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/%40preferred-natural-language%2Fcli.svg)](https://badge.fury.io/js/%40preferred-natural-language%2Fcli)
 [![TypeScript](https://img.shields.io/badge/TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![测试覆盖率](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/your-username/preferred-natural-language)
+[![测试覆盖率](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/wakanachan/preferred-natural-language)
 
 跨平台的自然语言偏好检测工具，通过 MCP（Model Context Protocol）为 Claude Code 和 Gemini CLI 提供**自动语言检测**功能。
 
@@ -58,35 +58,79 @@ pnl mcp
 #### Claude Code
 
 1. **安装插件**：
+
+   **从 Marketplaces 安装**：
    ```bash
-   # 从 Claude Code 市场安装（即将推出）
-   # 或手动安装
-   npm install -g @preferred-natural-language/claude-plugin
+   /plugin marketplace add wakanachan/preferred-natural-language
+   /plugin install preferred-natural-language@wakanachan/preferred-natural-language
    ```
 
-2. **自动语言检测**：
+   **本地开发模式**：
+   ```bash
+   # 克隆仓库
+   git clone https://github.com/wakanachan/preferred-natural-language
+   cd preferred-natural-language
+
+   # 安装为本地 marketplace
+   /plugin marketplace add ./dev-marketplace
+   /plugin install preferred-natural-language@local
+   ```
+
+2. **重启 Claude Code** 以加载插件（安装后必须重启）
+
+3. **自动语言检测**：
    - Claude Code 自动检测并使用您的首选语言
    - 通过 MCP Resource 访问语言偏好：`language://preference`
    - 使用 MCP 工具：`detect-language`、`set-language`、`list-languages`
 
-3. **斜杠命令**：
+4. **可用的斜杠命令**：
    ```
-   /detect-language   # 检测语言偏好
-   /set-language      # 设置语言偏好
-   /list-languages    # 列出支持的语言
+   /detect-language   # 检测当前语言偏好
+   /set-language      # 设置语言偏好（如 zh-CN, ja-JP）
+   /list-languages    # 列出所有 70+ 种支持的语言
    ```
 
 #### Gemini CLI
 
 1. **安装扩展**：
+
+   **本地开发模式**：
    ```bash
-   npm install -g @preferred-natural-language/gemini-extension
+   # 克隆仓库
+   git clone https://github.com/wakanachan/preferred-natural-language
+   cd preferred-natural-language
+
+   # 从本地路径安装
+   gemini extensions install ./packages/gemini-extension
+
+   # 或使用 link 命令
+   gemini extensions link ./packages/gemini-extension
    ```
 
-2. **自动语言检测**：
+2. **重启 Gemini CLI** 以加载扩展（更改仅在重启后生效）
+
+3. **更新扩展**（当有更新可用时）：
+   ```bash
+   # 更新特定扩展
+   gemini extensions update preferred-natural-language
+
+   # 或一次更新所有扩展
+   gemini extensions update --all
+   ```
+
+   > 注意：Gemini 会创建扩展的副本，因此需要运行 update 来拉取更改
+
+4. **自动语言检测**：
    - Gemini 在会话开始时自动检测您的首选语言
    - 扩展通过 `GEMINI.md` 提供上下文
    - MCP 服务器提供语言工具和资源
+
+5. **可用的斜杠命令**：
+   ```
+   /detect-language   # 检测当前语言偏好
+   /set-language      # 设置语言偏好（如 zh-CN, ja-JP）
+   /list-languages    # 列出所有 70+ 种支持的语言
+   ```
 
 ## 🌍 支持的语言（70+）
 
@@ -221,7 +265,7 @@ npm run test:ci            # CI 模式（无监视）
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-username/preferred-natural-language.git
+git clone https://github.com/wakanachan/preferred-natural-language.git
 cd preferred-natural-language
 
 # 安装依赖（monorepo）
@@ -358,10 +402,9 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ## 📞 支持
 
-- 🐛 [报告 Bug](https://github.com/your-username/preferred-natural-language/issues)
-- 💡 [请求功能](https://github.com/your-username/preferred-natural-language/issues)
-- 📖 [文档](https://github.com/your-username/preferred-natural-language/wiki)
-- 💬 [讨论](https://github.com/your-username/preferred-natural-language/discussions)
+- 🐛 [报告 Bug](https://github.com/wakanachan/preferred-natural-language/issues)
+- 💡 [请求功能](https://github.com/wakanachan/preferred-natural-language/issues)
+- 💬 [讨论](https://github.com/wakanachan/preferred-natural-language/discussions)
 
 ---
 

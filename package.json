@@ -1,6 +1,6 @@
 {
   "name": "preferred-natural-language",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Multi-platform natural language detection for AI assistants",
   "keywords": ["natural-language", "detection", "claude-code", "gemini", "mcp", "language-preference"],
@@ -10,10 +10,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build:shared && npm run build:cli",
+    "build": "npm run build:all",
     "build:shared": "npm run build --workspace=@preferred-natural-language/shared",
     "build:cli": "npm run build --workspace=@preferred-natural-language/cli",
-    "build:all": "npm run build",
+    "build:all": "npm run build:shared && npm run build:cli",
     "clean": "npm run clean --workspaces",
     "install:cli-global": "npm install -g ./packages/cli",
     "test": "jest",

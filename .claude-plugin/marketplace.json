@@ -1,0 +1,22 @@
+{
+  "name": "pnl-dev-marketplace",
+  "owner": {
+    "name": "Preferred Natural Language",
+    "url": "https://github.com/wakanachan/preferred-natural-language"
+  },
+  "description": "preferred-natural-language dev marketplace",
+  "plugins": [
+    {
+      "name": "preferred-natural-language",
+      "source": "./packages/claude-plugin",
+      "description": "Automatic language detection plugin for Claude Code. Detects user's preferred language using a 5-level priority chain and provides MCP tools for language management. Supports 70+ languages and regional variants with full i18n output in 10 major languages.",
+      "version": "2.0.0",
+      "author": {
+        "name": "Preferred Natural Language",
+        "url": "https://github.com/wakanachan/preferred-natural-language"
+      },
+      "keywords": ["language", "i18n", "locale", "detection", "natural-language", "mcp", "multilingual"],
+      "category": "utilities"
+    }
+  ]
+}

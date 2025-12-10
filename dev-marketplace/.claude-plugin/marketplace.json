@@ -8,7 +8,7 @@
       "name": "preferred-natural-language",
       "source": "./../packages/claude-plugin",
       "description": "Cross-platform natural language preference detection tool. Automatically detects user's preferred language using a 5-level priority chain: config file, custom env vars, OS locale, standard env vars, and fallback. Supports 70+ languages and regional variants.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "Preferred Natural Language Team"
       },

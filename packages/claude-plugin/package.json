@@ -1,12 +1,12 @@
 {
   "name": "@preferred-natural-language/claude-plugin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Claude Code plugin for Preferred Natural Language detection (lightweight wrapper)",
   "keywords": ["claude-code", "plugin", "language", "detection", "natural-language"],
   "author": "Preferred Natural Language",
   "license": "MIT",
   "peerDependencies": {
-    "@preferred-natural-language/cli": "^1.0.0"
+    "@preferred-natural-language/cli": "^2.0.0"
   },
   "files": [
     "scripts/**/*",

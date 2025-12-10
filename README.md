@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/%40preferred-natural-language%2Fcli.svg)](https://badge.fury.io/js/%40preferred-natural-language%2Fcli)
 [![TypeScript](https://img.shields.io/badge/TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/your-username/preferred-natural-language)
+[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/wakanachan/preferred-natural-language)
 
 A cross-platform natural language preference detection tool for AI assistants, with **automatic language detection** for Claude Code and Gemini CLI through MCP (Model Context Protocol).
 
@@ -58,35 +58,79 @@ pnl mcp
 #### For Claude Code
 
 1. **Install the plugin**:
+   
+   **From Marketplaces**:
    ```bash
-   # From Claude Code marketplace (coming soon)
-   # Or manually install
-   npm install -g @preferred-natural-language/claude-plugin
+   /plugin marketplace add wakanachan/preferred-natural-language
+   /plugin install preferred-natural-language@wakanachan/preferred-natural-language
    ```
 
-2. **Automatic Language Detection**:
+   **For Local Development**:
+   ```bash
+   # Clone the repository
+   git clone https://github.com/wakanachan/preferred-natural-language
+   cd preferred-natural-language
+
+   # Install as local marketplace
+   /plugin marketplace add ./dev-marketplace
+   /plugin install preferred-natural-language@local
+   ```
+
+2. **Restart Claude Code** to load the plugin (required after installation)
+
+3. **Automatic Language Detection**:
    - Claude Code automatically detects and uses your preferred language
    - Access language preference via MCP Resource: `language://preference`
    - Use MCP tools: `detect-language`, `set-language`, `list-languages`
 
-3. **Slash Commands**:
+4. **Available Slash Commands**:
    ```
-   /detect-language   # Detect language preference
-   /set-language      # Set language preference
-   /list-languages    # List supported languages
+   /detect-language   # Detect current language preference
+   /set-language      # Set language preference (e.g., zh-CN, ja-JP)
+   /list-languages    # List all 70+ supported languages
    ```
 
 #### For Gemini CLI
 
 1. **Install the extension**:
+
+   **For Local Development**:
    ```bash
-   npm install -g @preferred-natural-language/gemini-extension
+   # Clone the repository
+   git clone https://github.com/wakanachan/preferred-natural-language
+   cd preferred-natural-language
+
+   # Install from local path
+   gemini extensions install ./packages/gemini-extension
+
+   # Or
+   gemini extensions link ./packages/gemini-extension
    ```
 
-2. **Automatic Language Detection**:
+2. **Restart Gemini CLI** to load the extension (changes only apply on restart)
+
+3. **Update Extension** (when updates are available):
+   ```bash
+   # Update specific extension
+   gemini extensions update preferred-natural-language
+
+   # Or update all extensions at once
+   gemini extensions update --all
+   ```
+
+   > Note: Gemini creates a copy of the extension, so you need to run update to pull in changes
+
+4. **Automatic Language Detection**:
    - Gemini automatically detects your preferred language at session start
    - The extension provides context through `GEMINI.md`
    - MCP server provides language tools and resources
+
+5. **Available Slash Commands**:
+   ```
+   /detect-language   # Detect current language preference
+   /set-language      # Set language preference (e.g., zh-CN, ja-JP)
+   /list-languages    # List all 70+ supported languages
+   ```
 
 ## 🌍 Supported Languages (70+)
 
@@ -249,7 +293,7 @@ Current coverage (Phase 2B completed):
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/preferred-natural-language.git
+git clone https://github.com/wakanachan/preferred-natural-language.git
 cd preferred-natural-language
 
 # Install dependencies (monorepo)
@@ -386,10 +430,9 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 📞 Support
 
-- 🐛 [Report a Bug](https://github.com/your-username/preferred-natural-language/issues)
-- 💡 [Request a Feature](https://github.com/your-username/preferred-natural-language/issues)
-- 📖 [Documentation](https://github.com/your-username/preferred-natural-language/wiki)
-- 💬 [Discussions](https://github.com/your-username/preferred-natural-language/discussions)
+- 🐛 [Report a Bug](https://github.com/wakanachan/preferred-natural-language/issues)
+- 💡 [Request a Feature](https://github.com/wakanachan/preferred-natural-language/issues)
+- 💬 [Discussions](https://github.com/wakanachan/preferred-natural-language/discussions)
 
 ---
 

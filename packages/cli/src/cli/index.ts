@@ -20,7 +20,7 @@ async function main() {
   program
     .name('pnl')
     .description('Preferred Natural Language - CLI tool for language preference detection')
-    .version('1.0.0');
+    .version('2.0.0');
 
   // detect command
   program
@@ -85,7 +85,7 @@ async function main() {
   // mcp command
   program
     .command('mcp')
-    .description('Start MCP server for Claude Code or Gemini CLI')
+    .description('Start MCP server')
     .action(async () => {
       try {
         // Dynamically import and run MCP server
