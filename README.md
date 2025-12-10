@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/wakanachan/preferred-natural-language)
 
-A cross-platform natural language preference detection tool for AI assistants, with **automatic language detection** for Claude Code and Gemini CLI through MCP (Model Context Protocol).
+A cross-platform natural language preference detection tool for AI assistants through MCP (Model Context Protocol).
 
 ## 🌐 Languages
 

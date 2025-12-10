@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![测试覆盖率](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/wakanachan/preferred-natural-language)
 
-跨平台的自然语言偏好检测工具，通过 MCP（Model Context Protocol）为 Claude Code 和 Gemini CLI 提供**自动语言检测**功能。
+跨平台的自然语言偏好检测工具，通过 MCP（Model Context Protocol）为 AI 助手提供**自动语言检测**功能。
 
 ## 🌐 语言
 
