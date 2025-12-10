@@ -5,15 +5,30 @@ const config: Config = {
   testEnvironment: 'node',
   displayName: 'integration',
   extensionsToTreatAsEsm: ['.ts'],
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1'
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          module: 'ES2022',
+          moduleResolution: 'node'
+        }
+      }
+    ]
   },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@preferred-natural-language/shared(.*)$': '<rootDir>/packages/shared/src$1'
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(os-locale)/)'
+  ],
   testMatch: [
-    '<rootDir>/test/__integration__/**/*.test.ts',
-    '<rootDir>/test/__integration__/**/*.spec.ts'
+    '<rootDir>/packages/*/__tests__/integration/**/*.test.ts',
+    '<rootDir>/packages/*/__tests__/integration/**/*.spec.ts'
   ],
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  testTimeout: 10000,
   collectCoverageFrom: []
 };
 

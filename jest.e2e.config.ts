@@ -5,15 +5,30 @@ const config: Config = {
   testEnvironment: 'node',
   displayName: 'e2e',
   extensionsToTreatAsEsm: ['.ts'],
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1'
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          module: 'ES2022',
+          moduleResolution: 'node'
+        }
+      }
+    ]
   },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@preferred-natural-language/shared(.*)$': '<rootDir>/packages/shared/src$1'
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(os-locale)/)'
+  ],
   testMatch: [
-    '<rootDir>/test/__e2e__/**/*.test.ts',
-    '<rootDir>/test/__e2e__/**/*.spec.ts'
+    '<rootDir>/packages/*/__tests__/e2e/**/*.test.ts',
+    '<rootDir>/packages/*/__tests__/e2e/**/*.spec.ts'
   ],
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  testTimeout: 30000,
   collectCoverageFrom: []
 };
 

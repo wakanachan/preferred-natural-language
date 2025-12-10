@@ -6,6 +6,7 @@ dist/
 packages/*/dist/
 packages/*/src/**/*.js
 packages/*/src/**/*.js.map
+packages/*/src/**/*.ts.map
 packages/*/src/**/*.d.ts
 packages/*/**/*.tar.*
 packages/*/**/*.tgz

@@ -51,8 +51,14 @@ describe('i18n + Commands Integration Tests', () => {
       // Should contain box drawing characters
       expect(stdout).toMatch(/[╭╮╰╯│─]/);
 
-      // Should contain language information
-      expect(stdout).toMatch(/language|source|confidence/i);
+      // Should contain language code (BCP-47 format) - works across all languages
+      expect(stdout).toMatch(/[a-z]{2}(-[A-Z]{2})?/);
+
+      // Should contain confidence level - works across all languages
+      expect(stdout).toMatch(/high|medium|low/i);
+
+      // Should contain source indicator - works across all languages
+      expect(stdout).toMatch(/os-locale|config-file|env|http/i);
     }, 10000);
 
     it('should handle set command with valid language code', async () => {

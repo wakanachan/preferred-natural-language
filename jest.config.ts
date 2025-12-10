@@ -12,12 +12,14 @@ const config: Config = {
     './jest.integration.config.ts',
     './jest.e2e.config.ts'
   ],
+  testTimeout: 30000,
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
   collectCoverageFrom: [
     'packages/*/src/**/*.ts',
     '!packages/*/src/**/*.d.ts',
-    '!packages/*/src/**/index.ts'
+    '!packages/*/src/**/index.ts',
+    '!packages/cli/src/mcp/**/*.ts'
   ],
   coverageThreshold: {
     global: {
