@@ -1,15 +1,16 @@
 {
   "name": "@preferred-natural-language/gemini-extension",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Gemini CLI extension for Preferred Natural Language detection (lightweight wrapper)",
   "keywords": ["gemini", "cli", "extension", "mcp", "language", "detection", "natural-language"],
   "author": "Preferred Natural Language",
   "license": "MIT",
   "peerDependencies": {
-    "@preferred-natural-language/cli": "^1.0.0"
+    "@preferred-natural-language/cli": "^2.0.0"
   },
   "files": [
     "scripts/**/*",
+    "commands/**/*",
     "gemini-extension.json",
     "GEMINI.md"
   ]

@@ -1,0 +1,16 @@
+description = "List all supported languages and their codes"
+
+prompt = """
+Please use the MCP tool `list-languages` to display all supported natural languages and their BCP-47 codes.
+
+The tool will return a comprehensive list of 70+ languages and regional variants, including:
+- English variants (en-US, en-GB, en-CA, en-AU, etc.)
+- Chinese variants (zh-CN, zh-TW, zh-HK, etc.)
+- Japanese (ja-JP)
+- Korean (ko-KR)
+- European languages (fr-FR, de-DE, es-ES, it-IT, pt-BR, ru-RU, etc.)
+- Middle Eastern languages (ar-EG, ar-SA, he-IL, etc.)
+- Asian languages (hi-IN, th-TH, vi-VN, id-ID, etc.)
+
+Please format the output in a user-friendly way (e.g., table or grouped list).
+"""
