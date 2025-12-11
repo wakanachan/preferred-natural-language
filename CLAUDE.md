@@ -262,6 +262,16 @@ File is searched in paths defined in `src/config.ts:CONFIG_SEARCH_PATHS`.
 
 ## Git Workflow
 
+### ⚠️ 重要规则：推送到远程仓库前必须获得确认
+
+**在执行任何 git push 命令之前，必须先获得用户的明确确认。** 这包括：
+- git push
+- git push --force
+- git push --force-with-lease
+- 任何其他推送到远程仓库的命令
+
+如果用户没有明确表示要推送，绝不执行推送操作。
+
 ### Commit Messages
 All commit messages should be in **Chinese** with the following format:
 ```
