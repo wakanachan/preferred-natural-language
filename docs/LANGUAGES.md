@@ -81,7 +81,7 @@ This tool supports 70+ languages and regional variants with BCP-47 compliant lan
 
 ## Language Code Format
 
-All language codes follow the [BCP-47](https://tools.ietf.org/html/bcp47) standard format:
+All language codes follow the [BCP-47](https://www.rfc-editor.org/info/bcp47) standard format:
 
 ```
 language-code[-script-code][-country-code]

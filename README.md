@@ -391,7 +391,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - For AI integration standards
 - [Anthropic](https://www.anthropic.com/) - For Claude Code platform
-- [Google](https://ai.google.dev/) - For Gemini CLI platform
+- [Google](https://developers.google.com/ai) - For Gemini CLI platform
 - [os-locale](https://github.com/sindresorhus/os-locale) - For cross-platform locale detection
 - [Commander.js](https://github.com/tj/commander.js) - For CLI framework
 - [TypeScript](https://www.typescriptlang.org/) - For type safety

@@ -81,7 +81,7 @@
 
 ## 语言代码格式
 
-所有语言代码都遵循 [BCP-47](https://tools.ietf.org/html/bcp47) 标准格式：
+所有语言代码都遵循 [BCP-47](https://www.rfc-editor.org/info/bcp47) 标准格式：
 
 ```
 language-code[-script-code][-country-code]

@@ -389,7 +389,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - AI 集成标准
 - [Anthropic](https://www.anthropic.com/) - Claude Code 平台
-- [Google](https://ai.google.dev/) - Gemini CLI 平台
+- [Google](https://developers.google.com/ai) - Gemini CLI 平台
 - [os-locale](https://github.com/sindresorhus/os-locale) - 跨平台 locale 检测
 - [Commander.js](https://github.com/tj/commander.js) - CLI 框架
 - [TypeScript](https://www.typescriptlang.org/) - 类型安全
