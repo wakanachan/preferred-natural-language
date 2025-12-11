@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   test:
@@ -60,8 +59,8 @@ jobs:
           flags: ${{ matrix.os }}-${{ matrix.node-version }}
           name: codecov-${{ matrix.os }}-${{ matrix.node-version }}
 
-  build-and-publish:
-    name: Build and Publish
+  build-and-package:
+    name: Build and Create Package
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -74,7 +73,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
       - name: Install dependencies
@@ -83,8 +81,70 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish to npm
-        run: npm publish --access public --provenance
+      - name: Create package archives
+        run: |
+          # Get version from package.json
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Create tar.gz archive
+          tar -czf preferred-natural-language-cli-${VERSION}.tar.gz \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.gitignore \
+            --exclude=dist \
+            --exclude=__tests__ \
+            --exclude=coverage \
+            --exclude=.nyc_output \
+            --exclude=jest.config.*.js \
+            --exclude=mlc_config.json \
+            --transform 's,^./,preferred-natural-language-cli/,' \
+            .
+
+          # Create zip archive
+          zip -r preferred-natural-language-cli-${VERSION}.zip \
+            -x .git\* \
+            -x node_modules/\* \
+            -x dist/\* \
+            -x __tests__/\* \
+            -x coverage/\* \
+            -x .nyc_output/\* \
+            -x jest.config.*.js \
+            -x mlc_config.json \
+            .
+
+      - name: Upload tar.gz artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preferred-natural-language-cli-tarball
+          path: preferred-natural-language-cli-*.tar.gz
+          retention-days: 30
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preferred-natural-language-cli-zip
+          path: preferred-natural-language-cli-*.zip
+          retention-days: 30
+
+      - name: Display package info
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "## 📦 Package Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tarball**: preferred-natural-language-cli-${VERSION}.tar.gz" >> $GITHUB_STEP_SUMMARY
+          echo "- **Zip**: preferred-natural-language-cli-${VERSION}.zip" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📥 Download Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to the **Actions** tab in this repository" >> $GITHUB_STEP_SUMMARY
+          echo "2. Click on the latest workflow run" >> $GITHUB_STEP_SUMMARY
+          echo "3. Download the artifacts from the **Artifacts** section" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Installation" >> $GITHUB_STEP_SUMMARY
+          echo "After extracting:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "npm install" >> $GITHUB_STEP_SUMMARY
+          echo "npm run build" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   security-audit:
     name: Security Audit
