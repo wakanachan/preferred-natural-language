@@ -31,7 +31,7 @@
 npm install -g @preferred-natural-language/cli
 
 # 或使用 npx（无需安装）
-npx @preferred-natural-language/cli detect
+npx -p @preferred-natural-language/cli pnl detect
 ```
 
 ### CLI 使用

@@ -1,14 +1,21 @@
 {
   "name": "@preferred-natural-language/cli",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "type": "module",
   "description": "CLI tool and MCP server for Preferred Natural Language detection",
-  "keywords": ["cli", "language", "detection", "natural-language", "mcp", "model-context-protocol"],
+  "keywords": [
+    "cli",
+    "language",
+    "detection",
+    "natural-language",
+    "mcp",
+    "model-context-protocol"
+  ],
   "author": "Preferred Natural Language",
   "license": "MIT",
   "bin": {
-    "pnl": "./bin/pnl.js",
-    "pnl-mcp": "./bin/pnl-mcp.js"
+    "pnl": "bin/pnl.js",
+    "pnl-mcp": "bin/pnl-mcp.js"
   },
   "scripts": {
     "build": "tsc",
@@ -20,7 +27,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@preferred-natural-language/shared": "file:../shared",
+    "@preferred-natural-language/shared": "^2.0.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "commander": "^12.0.0"
   },

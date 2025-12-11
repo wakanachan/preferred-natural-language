@@ -4,7 +4,7 @@ import { spawn, execSync } from 'child_process';
 /**
  * 智能启动 MCP 服务器
  * 1. 优先使用全局安装的 pnl-mcp（快速启动）
- * 2. 如果未找到，使用 npx @preferred-natural-language/cli mcp（自动下载）
+ * 2. 如果未找到，使用 npx -p @preferred-natural-language/cli pnl-mcp（自动下载）
  */
 
 console.error('[MCP Launcher] Starting preferred-natural-language MCP server...');
@@ -28,7 +28,7 @@ try {
   console.error('[MCP Launcher] Global pnl-mcp not found, falling back to npx...');
   console.error('[MCP Launcher] First run may take a moment to download...');
 
-  const child = spawn('npx', ['-y', '@preferred-natural-language/cli', 'mcp'], {
+  const child = spawn('npx', ['-y', '-p', '@preferred-natural-language/cli', 'pnl-mcp'], {
     stdio: 'inherit',
     shell: process.platform === 'win32'
   });

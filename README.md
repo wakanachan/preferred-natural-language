@@ -31,7 +31,7 @@ A cross-platform natural language preference detection tool for AI assistants th
 npm install -g @preferred-natural-language/cli
 
 # Or use with npx (no installation)
-npx @preferred-natural-language/cli detect
+npx -p @preferred-natural-language/cli pnl detect
 ```
 
 ### CLI Usage

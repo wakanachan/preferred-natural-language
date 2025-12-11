@@ -82,7 +82,7 @@ Both Claude and Gemini plugins enable automatic language detection:
 2. **Gemini CLI**: `GEMINI.md` context file provides explicit instructions for AI to check language preference
 3. **MCP Resource Subscription**: Server notifies clients when language preference changes
 
-**Implementation**: The MCP server is started by smart launchers (`scripts/start-mcp.js`) that try global install first, then fall back to `npx @preferred-natural-language/cli mcp`.
+**Implementation**: The MCP server is started by smart launchers (`scripts/start-mcp.js`) that try global install first, then fall back to `npx -p @preferred-natural-language/cli pnl-mcp`.
 
 ### i18n System
 
@@ -176,8 +176,8 @@ node packages/cli/dist/cli/index.js --help
 
 # Test MCP server locally
 node packages/cli/dist/mcp/server.js
-# Or use the CLI package's mcp command
-npx @preferred-natural-language/cli mcp
+# Or use the CLI package's pnl-mcp command
+npx -p @preferred-natural-language/cli pnl-mcp
 ```
 
 ### Running a Single Test
@@ -415,7 +415,7 @@ npm run build:shared # Build shared package first
 ### MCP Server Not Starting
 If the MCP server fails to start:
 1. Verify CLI package is installed globally: `npm list -g @preferred-natural-language/cli`
-2. Try using npx fallback: `npx @preferred-natural-language/cli mcp`
+2. Try using npx fallback: `npx -p @preferred-natural-language/cli pnl-mcp`
 3. Check MCP server logs in Claude/Gemini console
 4. Verify `scripts/start-mcp.js` has execute permissions
 
