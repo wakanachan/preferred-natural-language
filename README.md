@@ -135,6 +135,87 @@ pnl mcp
    /list-languages    # List all 70+ supported languages
    ```
 
+#### General MCP Server Configuration
+
+For users who prefer not to install plugins, you can configure the MCP server manually in any MCP-compatible client.
+
+**Using npx**
+
+Add this configuration to your MCP client settings:
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "npx",
+      "args": [
+        "@preferred-natural-language/cli",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+For Windows
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@preferred-natural-language/cli",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Using Global Installation**
+
+If you have installed the package globally:
+
+```bash
+npm install -g @preferred-natural-language/cli
+```
+
+Then configure your MCP client with:
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "pnl",
+      "args": ["mcp"],
+      "env": {}
+    }
+  }
+}
+```
+
+**Standalone Usage**
+
+You can also run the MCP server directly for testing:
+
+```bash
+# Using npx (no installation required)
+npx @preferred-natural-language/cli mcp
+
+# Or if installed globally
+pnl mcp
+```
+
+The server provides the same MCP capabilities via stdio communication:
+- **Resource**: `language://preference` - Auto-loaded language preference
+- **Prompt**: `use-preferred-language` - AI language instruction
+- **Tools**: `detect-language`, `set-language`, `list-languages`
+
 ## 🌍 Supported Languages (70+)
 
 We support **70+ languages and regional variants**, with **full i18n output** for 10 major languages:

@@ -135,6 +135,89 @@ pnl mcp
    /list-languages    # 列出所有 70+ 种支持的语言
    ```
 
+#### 通用 MCP 服务器配置
+
+对于不想安装插件的用户，可以在任何兼容 MCP 的客户端中手动配置 MCP 服务器。
+
+**使用 npx**
+
+在您的 MCP 客户端设置中添加以下配置：
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "npx",
+      "args": [
+        "@preferred-natural-language/cli",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**Windows 系统配置**
+
+Windows 用户需要使用 cmd 命令：
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@preferred-natural-language/cli",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+**使用全局安装**
+
+如果您已经全局安装了pnl：
+
+```bash
+npm install -g @preferred-natural-language/cli
+```
+
+然后在 MCP 客户端中配置：
+
+```json
+{
+  "mcpServers": {
+    "pnl-mcp": {
+      "command": "pnl",
+      "args": ["mcp"],
+      "env": {}
+    }
+  }
+}
+```
+
+**独立使用**
+
+您也可以直接运行 MCP 服务器进行测试：
+
+```bash
+# 使用 npx（无需安装）
+npx @preferred-natural-language/cli mcp
+
+# 或如果已全局安装
+pnl mcp
+```
+
+服务器通过 stdio 通信提供相同的 MCP 功能：
+- **Resource**：`language://preference` - 自动加载的语言偏好
+- **Prompt**：`use-preferred-language` - AI 语言指令
+- **Tools**：`detect-language`、`set-language`、`list-languages`
+
 ## 🌍 支持的语言（70+）
 
 我们支持 **70+ 种语言和地区变体**，其中 **10 种主要语言**提供**完整的 i18n 输出**：
