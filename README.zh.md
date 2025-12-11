@@ -62,7 +62,7 @@ pnl mcp
    **从 Marketplaces 安装**：
    ```bash
    /plugin marketplace add wakanachan/preferred-natural-language
-   /plugin install preferred-natural-language@wakanachan/preferred-natural-language
+   /plugin install pnl@preferred-natural-language
    ```
 
    **本地开发模式**：
@@ -72,7 +72,7 @@ pnl mcp
    cd preferred-natural-language
 
    # 安装为本地 marketplace
-   /plugin marketplace add ./.claude-plugin
+   /plugin marketplace add ./
    /plugin install preferred-natural-language@pnl-dev-marketplace
    ```
 
@@ -85,14 +85,19 @@ pnl mcp
 
 4. **可用的斜杠命令**：
    ```
-   /detect-language   # 检测当前语言偏好
-   /set-language      # 设置语言偏好（如 zh-CN, ja-JP）
-   /list-languages    # 列出所有 70+ 种支持的语言
+   /pnl:detect-language   # 检测当前语言偏好
+   /pnl:set-language      # 设置语言偏好（如 zh-CN, ja-JP）
+   /pnl:list-languages    # 列出所有 70+ 种支持的语言
    ```
 
 #### Gemini CLI
 
 1. **安装扩展**：
+
+   **从 Github 安装**：
+   ```bash
+   gemini extensions install https://github.com/wakanachan/preferred-natural-language
+   ```
 
    **本地开发模式**：
    ```bash
@@ -227,13 +232,14 @@ preferred-natural-language/
 │   ├── unit/                     # 单元测试
 │   ├── integration/              # 集成测试
 │   └── e2e/                      # 端到端测试
-├── .claude-plugin/               # Claude Code 插件（marketplace）
-│   ├── marketplace.json          # Marketplace 配置
-│   └── pnl/                      # 插件根目录
-│       ├── .claude-plugin/plugin.json
-│       ├── .mcp.json             # MCP 服务器配置
-│       ├── commands/             # 斜杠命令
-│       └── scripts/start-mcp.js  # 智能 MCP 启动器
+├── .claude-plugin/               # Claude Code marketplace 配置
+│   └── marketplace.json          # 指向 ./claude-code-plugin
+├── claude-code-plugin/           # Claude Code 插件
+│   ├── .claude-plugin/plugin.json
+│   ├── .mcp.json                 # MCP 服务器配置
+│   ├── agents/                   # Agent 定义
+│   ├── commands/                 # 斜杠命令
+│   └── scripts/start-mcp.js      # 智能 MCP 启动器
 ├── gemini-extension.json         # Gemini CLI 扩展清单
 ├── GEMINI.md                     # Gemini 上下文文件
 ├── commands/                     # Gemini 斜杠命令（.toml）

@@ -62,7 +62,7 @@ pnl mcp
    **From Marketplaces**:
    ```bash
    /plugin marketplace add wakanachan/preferred-natural-language
-   /plugin install preferred-natural-language@wakanachan/preferred-natural-language
+   /plugin install pnl@preferred-natural-language
    ```
 
    **For Local Development**:
@@ -72,7 +72,7 @@ pnl mcp
    cd preferred-natural-language
 
    # Install as local marketplace
-   /plugin marketplace add ./.claude-plugin
+   /plugin marketplace add ./
    /plugin install preferred-natural-language@pnl-dev-marketplace
    ```
 
@@ -85,14 +85,19 @@ pnl mcp
 
 4. **Available Slash Commands**:
    ```
-   /detect-language   # Detect current language preference
-   /set-language      # Set language preference (e.g., zh-CN, ja-JP)
-   /list-languages    # List all 70+ supported languages
+   /pnl:detect-language   # Detect current language preference
+   /pnl:set-language      # Set language preference (e.g., zh-CN, ja-JP)
+   /pnl:list-languages    # List all 70+ supported languages
    ```
 
 #### For Gemini CLI
 
 1. **Install the extension**:
+
+   **From Github**:
+   ```bash
+   gemini extensions install https://github.com/wakanachan/preferred-natural-language
+   ```
 
    **For Local Development**:
    ```bash
@@ -229,13 +234,14 @@ preferred-natural-language/
 │   ├── unit/                     # Unit tests
 │   ├── integration/              # Integration tests
 │   └── e2e/                      # End-to-end tests
-├── .claude-plugin/               # Claude Code plugin (marketplace)
-│   ├── marketplace.json          # Marketplace config
-│   └── pnl/                      # Plugin root
-│       ├── .claude-plugin/plugin.json
-│       ├── .mcp.json             # MCP server config
-│       ├── commands/             # Slash commands
-│       └── scripts/start-mcp.js  # Smart MCP launcher
+├── .claude-plugin/               # Claude Code marketplace config
+│   └── marketplace.json          # Points to ./claude-code-plugin
+├── claude-code-plugin/           # Claude Code plugin
+│   ├── .claude-plugin/plugin.json
+│   ├── .mcp.json                 # MCP server config
+│   ├── agents/                   # Agent definitions
+│   ├── commands/                 # Slash commands
+│   └── scripts/start-mcp.js      # Smart MCP launcher
 ├── gemini-extension.json         # Gemini CLI extension manifest
 ├── GEMINI.md                     # Gemini context file
 ├── commands/                     # Gemini slash commands (.toml)
