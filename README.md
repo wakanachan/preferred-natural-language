@@ -62,7 +62,7 @@ pnl mcp
    **From Marketplaces**:
    ```bash
    /plugin marketplace add wakanachan/preferred-natural-language
-   /plugin install pnl@preferred-natural-language
+   /plugin install pnl@pnl-dev-marketplace
    ```
 
    **For Local Development**:
@@ -190,6 +190,7 @@ Create `.preferred-language.json` in your project root:
 # Platform-specific (priority 2)
 export CLAUDE_CODE_NATURAL_LANGUAGE="zh-CN"
 export GEMINI_CLI_NATURAL_LANGUAGE="ja-JP"
+# others（coming soon）
 
 # Standard Unix variables (priority 4)
 export LANGUAGE="zh_CN:en_US"
@@ -308,21 +309,6 @@ npm run test:pr            # PR validation (unit + integration)
 ```
 
 ## 📖 API Reference
-
-### Programmatic Usage
-
-```typescript
-import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-language/cli';
-
-// Detect language
-const detector = new LanguageDetector();
-const result = await detector.detect();
-// { language: 'zh-CN', source: 'os-locale', confidence: 'high' }
-
-// List supported languages
-console.log(SUPPORTED_LANGUAGES);
-// { 'en': 'English', 'zh-CN': 'Chinese (Simplified)', ... }
-```
 
 ### MCP Server API
 

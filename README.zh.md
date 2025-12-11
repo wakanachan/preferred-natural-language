@@ -62,7 +62,7 @@ pnl mcp
    **从 Marketplaces 安装**：
    ```bash
    /plugin marketplace add wakanachan/preferred-natural-language
-   /plugin install pnl@preferred-natural-language
+   /plugin install pnl@pnl-dev-marketplace
    ```
 
    **本地开发模式**：
@@ -188,6 +188,7 @@ pnl mcp
 # 平台特定（优先级 2）
 export CLAUDE_CODE_NATURAL_LANGUAGE="zh-CN"
 export GEMINI_CLI_NATURAL_LANGUAGE="ja-JP"
+# 其他平台（coming soon）
 
 # 标准 Unix 变量（优先级 4）
 export LANGUAGE="zh_CN:en_US"
@@ -306,21 +307,6 @@ npm run test:pr            # PR 验证（单元 + 集成）
 ```
 
 ## 📖 API 参考
-
-### 编程使用
-
-```typescript
-import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-language/cli';
-
-// 检测语言
-const detector = new LanguageDetector();
-const result = await detector.detect();
-// { language: 'zh-CN', source: 'os-locale', confidence: 'high' }
-
-// 列出支持的语言
-console.log(SUPPORTED_LANGUAGES);
-// { 'en': 'English', 'zh-CN': 'Chinese (Simplified)', ... }
-```
 
 ### MCP 服务器 API
 
