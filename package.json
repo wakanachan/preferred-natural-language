@@ -1,6 +1,6 @@
 {
   "name": "@preferred-natural-language/cli",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "description": "Cross-platform natural language preference detection for AI assistants",
   "keywords": [

@@ -1,0 +1,11 @@
+{
+  "fallbackRetryDelay": 30,
+  "retryOn429": true,
+  "retryCount": 3,
+  "timeoutSeconds": 30,
+  "ignorePatterns": [
+    {
+      "pattern": "^https://www.rfc-editor.org/"
+    }
+  ]
+}
