@@ -86,31 +86,31 @@ jobs:
           # Get version from package.json
           VERSION=$(node -p "require('./package.json').version")
 
+          # Create a temporary directory for packaging
+          PKG_DIR="preferred-natural-language-cli-${VERSION}"
+          mkdir -p ${PKG_DIR}
+
+          # Copy all necessary files
+          rsync -av --exclude='.git' \
+                     --exclude='node_modules' \
+                     --exclude='.gitignore' \
+                     --exclude='dist' \
+                     --exclude='__tests__' \
+                     --exclude='coverage' \
+                     --exclude='.nyc_output' \
+                     --exclude='jest.config.*.js' \
+                     --exclude='mlc_config.json' \
+                     --exclude='.DS_Store' \
+                     . ${PKG_DIR}/
+
           # Create tar.gz archive
-          tar -czf preferred-natural-language-cli-${VERSION}.tar.gz \
-            --exclude=.git \
-            --exclude=node_modules \
-            --exclude=.gitignore \
-            --exclude=dist \
-            --exclude=__tests__ \
-            --exclude=coverage \
-            --exclude=.nyc_output \
-            --exclude=jest.config.*.js \
-            --exclude=mlc_config.json \
-            --transform 's,^./,preferred-natural-language-cli/,' \
-            .
+          tar -czf preferred-natural-language-cli-${VERSION}.tar.gz ${PKG_DIR}
 
           # Create zip archive
-          zip -r preferred-natural-language-cli-${VERSION}.zip \
-            -x .git\* \
-            -x node_modules/\* \
-            -x dist/\* \
-            -x __tests__/\* \
-            -x coverage/\* \
-            -x .nyc_output/\* \
-            -x jest.config.*.js \
-            -x mlc_config.json \
-            .
+          zip -r preferred-natural-language-cli-${VERSION}.zip ${PKG_DIR}
+
+          # Clean up temporary directory
+          rm -rf ${PKG_DIR}
 
       - name: Upload tar.gz artifact
         uses: actions/upload-artifact@v4
