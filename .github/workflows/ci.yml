@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build packages
+      - name: Build
         run: npm run build
 
       - name: Run linting
@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage/lcov.info
           flags: ${{ matrix.os }}-${{ matrix.node-version }}
@@ -76,15 +76,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build packages
+      - name: Build
         run: npm run build
 
       - name: Publish to npm
-        run: |
-          npm publish --workspace=@preferred-natural-language/shared --access public
-          npm publish --workspace=@preferred-natural-language/cli --access public
-          npm publish --workspace=@preferred-natural-language/claude-plugin --access public
-          npm publish --workspace=@preferred-natural-language/gemini-extension --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

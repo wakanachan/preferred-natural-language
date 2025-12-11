@@ -3,15 +3,11 @@ node_modules/
 
 # Build output
 dist/
-packages/*/dist/
-packages/*/src/**/*.js
-packages/*/src/**/*.js.map
-packages/*/src/**/*.ts.map
-packages/*/src/**/*.d.ts
-packages/*/**/*.tar.*
-packages/*/**/*.tgz
-packages/*/**/*.zip
-dev-marketplace/pnl-dev/
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+*.tgz
+*.tar.*
 
 # TypeScript cache
 *.tsbuildinfo

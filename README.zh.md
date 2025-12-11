@@ -20,7 +20,7 @@
 - 🌍 **70+ 种语言**：全面的语言和地区变体支持
 - 🔧 **多种检测方式**：配置文件、环境变量、系统语言
 - 📝 **完整 i18n**：CLI 输出支持 10 种语言（中、英、日、韩、俄、葡、西、法、德）
-- 🧪 **100% 测试**：65+ 测试用例，100% 语句覆盖率
+- 🧪 **100% 测试**：100+ 测试用例，高覆盖率
 
 ## 🚀 快速开始
 
@@ -31,7 +31,7 @@
 npm install -g @preferred-natural-language/cli
 
 # 或使用 npx（无需安装）
-npx -p @preferred-natural-language/cli pnl detect
+npx @preferred-natural-language/cli detect
 ```
 
 ### CLI 使用
@@ -72,8 +72,8 @@ pnl mcp
    cd preferred-natural-language
 
    # 安装为本地 marketplace
-   /plugin marketplace add ./dev-marketplace
-   /plugin install preferred-natural-language@local
+   /plugin marketplace add ./.claude-plugin
+   /plugin install preferred-natural-language@pnl-dev-marketplace
    ```
 
 2. **重启 Claude Code** 以加载插件（安装后必须重启）
@@ -100,11 +100,11 @@ pnl mcp
    git clone https://github.com/wakanachan/preferred-natural-language
    cd preferred-natural-language
 
-   # 从本地路径安装
-   gemini extensions install ./packages/gemini-extension
+   # 从本地路径安装（根目录包含 gemini-extension.json）
+   gemini extensions install .
 
    # 或使用 link 命令
-   gemini extensions link ./packages/gemini-extension
+   gemini extensions link .
    ```
 
 2. **重启 Gemini CLI** 以加载扩展（更改仅在重启后生效）
@@ -117,8 +117,6 @@ pnl mcp
    # 或一次更新所有扩展
    gemini extensions update --all
    ```
-
-   > 注意：Gemini 会创建扩展的副本，因此需要运行 update 来拉取更改
 
 4. **自动语言检测**：
    - Gemini 在会话开始时自动检测您的首选语言
@@ -204,60 +202,69 @@ pnl set zh-CN
 
 ## 🏗️ 架构
 
-### Monorepo 结构
+### 项目结构
 
 ```
 preferred-natural-language/
-├── packages/
-│   ├── shared/                    # 核心检测库
-│   ├── cli/                       # CLI 包 + MCP 服务器
-│   │   ├── src/
-│   │   │   ├── cli/               # CLI 命令
-│   │   │   ├── i18n/              # 国际化（10 种语言）
-│   │   │   └── mcp/               # MCP 服务器
-│   │   └── __tests__/             # 单元 + 集成测试
-│   ├── claude-plugin/             # Claude Code 插件（轻量）
-│   └── gemini-extension/          # Gemini CLI 扩展（轻量）
+├── src/                          # 源代码
+│   ├── languageDetector.ts       # 核心 5 级优先级检测
+│   ├── types.ts                  # 类型定义
+│   ├── languageNames.ts          # 70+ 语言映射
+│   ├── config.ts                 # 配置路径
+│   ├── index.ts                  # 统一导出
+│   ├── cli/                      # CLI 命令（Commander.js）
+│   │   ├── commands/             # detect, set, show, list, mcp
+│   │   ├── utils/                # 显示工具
+│   │   └── index.ts              # CLI 入口
+│   ├── i18n/                     # 国际化
+│   │   ├── index.ts              # I18n 类
+│   │   └── locales/              # 10 种语言文件
+│   └── mcp/                      # MCP 服务器
+│       └── server.ts             # Resource + Prompt + Tools
+├── bin/
+│   └── pnl.js                    # CLI 入口点
+├── __tests__/                    # 测试套件
+│   ├── unit/                     # 单元测试
+│   ├── integration/              # 集成测试
+│   └── e2e/                      # 端到端测试
+├── .claude-plugin/               # Claude Code 插件（marketplace）
+│   ├── marketplace.json          # Marketplace 配置
+│   └── pnl/                      # 插件根目录
+│       ├── .claude-plugin/plugin.json
+│       ├── .mcp.json             # MCP 服务器配置
+│       ├── commands/             # 斜杠命令
+│       └── scripts/start-mcp.js  # 智能 MCP 启动器
+├── gemini-extension.json         # Gemini CLI 扩展清单
+├── GEMINI.md                     # Gemini 上下文文件
+├── commands/                     # Gemini 斜杠命令（.toml）
+└── scripts/start-mcp.js          # 共享 MCP 启动器
 ```
 
 ### 设计理念
 
-- **共享核心**：所有检测逻辑在 `@preferred-natural-language/shared`
-- **CLI 包**：完整的 CLI + MCP 服务器在 `@preferred-natural-language/cli`
-- **轻量插件**：Claude/Gemini 包是轻量包装（配置 + 启动脚本）
-- **无代码重复**：插件层通过智能启动器委托给 CLI 包
+- **单一包**：所有代码在 `@preferred-natural-language/cli`
+- **轻量插件**：Claude/Gemini 集成是配置层
+- **智能启动器**：插件通过智能启动器使用 `pnl mcp` 子命令
+- **无代码重复**：插件层委托给 CLI 包
 
 ## 🧪 测试
 
 ### 运行测试
 
 ```bash
-# 所有测试（单元 + 集成）
+# 所有测试（单元 + 集成 + e2e）
 npm test
 
 # 特定测试套件
 npm run test:unit           # 快速单元测试
 npm run test:integration    # 集成测试
-npm run test:e2e           # 端到端测试（Phase 4）
+npm run test:e2e            # 端到端测试
 
 # 开发
 npm run test:watch          # 监视模式
 npm run test:coverage       # 带覆盖率报告
-npm run test:ci            # CI 模式（无监视）
+npm run test:ci             # CI 模式（无监视）
 ```
-
-### 测试覆盖率
-
-当前覆盖率（Phase 2B 完成）：
-
-| 包 | 语句 | 分支 | 函数 | 行 |
-|----|------|------|------|-----|
-| **CLI** | **100%** | **72.72%** | **100%** | **100%** |
-| 命令 | 100% | 80% | 100% | 100% |
-| i18n | 100% | 100% | 100% | 100% |
-| 工具 | 100% | 66.66% | 100% | 100% |
-
-**65 个测试用例，全部通过** ✅
 
 ## 🛠️ 开发
 
@@ -268,11 +275,11 @@ npm run test:ci            # CI 模式（无监视）
 git clone https://github.com/wakanachan/preferred-natural-language.git
 cd preferred-natural-language
 
-# 安装依赖（monorepo）
+# 安装依赖
 npm install
 
-# 构建包
-npm run build              # 构建 shared + cli
+# 构建
+npm run build
 
 # 运行测试
 npm test
@@ -282,48 +289,31 @@ npm test
 
 ```bash
 # 构建
-npm run build              # 构建 shared + cli 包
-npm run build:shared       # 仅构建 shared 核心
-npm run build:cli          # 仅构建 CLI 包
-
-# 开发（监视模式）
-npm run dev:shared         # 监视 shared 包
-npm run dev:cli            # 监视 CLI 包
+npm run build              # 构建项目
 
 # 测试
 npm run test:unit          # 单元测试
 npm run test:integration   # 集成测试
+npm run test:e2e           # E2E 测试
 npm run test:coverage      # 带覆盖率
 npm run test:pr            # PR 验证（单元 + 集成）
-
-# 安装
-npm run install:cli-global # 从源代码全局安装 CLI
 ```
 
 ## 📖 API 参考
 
-### CLI 包
+### 编程使用
 
 ```typescript
-import { LanguageDetector } from '@preferred-natural-language/shared';
-import { I18n } from '@preferred-natural-language/cli/i18n';
-import { DetectCommand } from '@preferred-natural-language/cli/commands';
+import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-language/cli';
 
 // 检测语言
 const detector = new LanguageDetector();
 const result = await detector.detect();
 // { language: 'zh-CN', source: 'os-locale', confidence: 'high' }
 
-// 初始化 i18n
-const i18n = new I18n(result.language, result.confidence);
-const message = i18n.t('detect.result', {
-  languageName: '简体中文',
-  language: 'zh-CN'
-});
-
-// 使用命令类
-const command = new DetectCommand(detector, i18n);
-const output = await command.execute();
+// 列出支持的语言
+console.log(SUPPORTED_LANGUAGES);
+// { 'en': 'English', 'zh-CN': 'Chinese (Simplified)', ... }
 ```
 
 ### MCP 服务器 API
@@ -340,8 +330,6 @@ MCP 服务器提供：
 - `detect-language` - 检测当前语言
 - `set-language(language, fallback?)` - 设置语言偏好
 - `list-languages()` - 列出所有 70+ 种支持的语言
-
-**自动检测**：MCP 服务器声明 `resources: { subscribe: true }` 以实现自动上下文注入。
 
 ### 类型定义
 
@@ -384,7 +372,7 @@ git commit -m "feat: 添加新功能描述
 
 🤖 Generated with Claude Code
 
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
 ## 📄 许可证

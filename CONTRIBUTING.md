@@ -58,8 +58,8 @@ Thank you for your interest in contributing to Preferred Natural Language! We we
    ```
 
 2. **Make your changes**
-   - Use `npm run dev:shared` to watch core library changes
-   - Use `npm run dev:cli` to watch CLI package changes
+   - Make changes in `src/` directory
+   - Run `npm run build` to rebuild
    - Ensure all tests pass: `npm test`
 
 3. **Commit your changes**
@@ -115,16 +115,11 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 #### Test Structure
 
 ```
-packages/
-├── shared/
-│   └── __tests__/
-│       ├── unit/           # Unit tests
-│       └── integration/    # Integration tests
-└── cli/
-    └── __tests__/
-        ├── unit/           # Unit tests
-        ├── integration/    # Integration tests
-        └── e2e/           # End-to-end tests
+__tests__/
+├── unit/           # Unit tests
+├── integration/    # Integration tests
+├── e2e/            # End-to-end tests
+└── helpers/        # Test utilities
 ```
 
 #### Running Tests
@@ -307,8 +302,8 @@ Before submitting a PR, ensure:
    ```
 
 2. **进行开发**
-   - 使用 `npm run dev:shared` 监听核心库变化
-   - 使用 `npm run dev:cli` 监听 CLI 包变化
+   - 在 `src/` 目录中进行修改
+   - 运行 `npm run build` 重新构建
    - 确保所有测试通过：`npm test`
 
 3. **提交代码**
@@ -364,16 +359,11 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 #### 测试结构
 
 ```
-packages/
-├── shared/
-│   └── __tests__/
-│       ├── unit/           # 单元测试
-│       └── integration/    # 集成测试
-└── cli/
-    └── __tests__/
-        ├── unit/           # 单元测试
-        ├── integration/    # 集成测试
-        └── e2e/           # 端到端测试
+__tests__/
+├── unit/           # 单元测试
+├── integration/    # 集成测试
+├── e2e/            # 端到端测试
+└── helpers/        # 测试工具
 ```
 
 #### 运行测试

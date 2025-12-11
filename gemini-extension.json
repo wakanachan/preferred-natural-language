@@ -1,0 +1,14 @@
+{
+  "name": "preferred-natural-language",
+  "version": "3.0.0",
+  "mcpServers": {
+    "preferredNaturalLanguage": {
+      "command": "node",
+      "args": [
+        "${extensionPath}${/}scripts${/}start-mcp.js"
+      ],
+      "cwd": "${extensionPath}"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}

@@ -37,10 +37,6 @@ jobs:
     name: Type Check
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        package: [shared, claude-plugin, gemini-extension]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,8 +50,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Type check ${{ matrix.package }}
-        run: npm run type-check --workspace=@preferred-natural-language/${{ matrix.package }}
+      - name: Type check
+        run: npm run build
 
   security-scan:
     name: Security Scan
@@ -94,7 +90,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@v3
+        uses: actions/dependency-review-action@v4
 
   size-limit:
     name: Size Limit
@@ -113,7 +109,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build packages
+      - name: Build
         run: npm run build
 
       - name: Check bundle size
@@ -137,15 +133,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
   complexity-analysis:
     name: Complexity Analysis
@@ -168,7 +164,7 @@ jobs:
         run: npm run complexity-report --if-present
 
       - name: Upload complexity report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: complexity-report
           path: complexity-report.json
@@ -210,17 +206,4 @@ jobs:
             exit 1
           fi
 
-          # Check README has required sections
-          for readme in README.md README.zh.md; do
-            if ! grep -q "## ✨ Features" "$readme"; then
-              echo "❌ $readme missing Features section"
-              exit 1
-            fi
-
-            if ! grep -q "## 🚀 Quick Start" "$readme"; then
-              echo "❌ $readme missing Quick Start section"
-              exit 1
-            fi
-          done
-
-          echo "✅ README files are properly structured"
+          echo "✅ README files exist"

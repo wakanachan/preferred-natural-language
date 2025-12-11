@@ -16,10 +16,10 @@ const config: Config = {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
   collectCoverageFrom: [
-    'packages/*/src/**/*.ts',
-    '!packages/*/src/**/*.d.ts',
-    '!packages/*/src/**/index.ts',
-    '!packages/cli/src/mcp/**/*.ts'
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/**/index.ts',
+    '!src/mcp/**/*.ts'
   ],
   coverageThreshold: {
     global: {

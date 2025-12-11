@@ -98,8 +98,8 @@ language-code[-script-code][-country-code]
 
 To add support for a new language:
 
-1. Add the language code and name to `packages/shared/src/languageNames.ts`
-2. Add appropriate test cases to `packages/shared/__tests__/languageNames.test.ts`
+1. Add the language code and name to `src/languageNames.ts`
+2. Add appropriate test cases to `__tests__/unit/languageNames.test.ts`
 3. Run tests to ensure everything works correctly
 4. Submit a pull request
 

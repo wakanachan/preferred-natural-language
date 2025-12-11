@@ -1,43 +1,55 @@
 {
-  "name": "preferred-natural-language",
-  "version": "2.0.0",
+  "name": "@preferred-natural-language/cli",
+  "version": "3.0.0",
   "type": "module",
-  "description": "Multi-platform natural language detection for AI assistants",
-  "keywords": ["natural-language", "detection", "claude-code", "gemini", "mcp", "language-preference"],
+  "description": "Cross-platform natural language preference detection for AI assistants",
+  "keywords": [
+    "natural-language",
+    "detection",
+    "claude-code",
+    "gemini",
+    "mcp",
+    "language-preference",
+    "cli",
+    "i18n"
+  ],
   "author": "Preferred Natural Language",
   "license": "MIT",
-  "workspaces": [
-    "packages/*"
-  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "pnl": "bin/pnl.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli/index.js"
+    },
+    "./mcp": {
+      "import": "./dist/mcp/server.js"
+    }
+  },
   "scripts": {
-    "build": "npm run build:all",
-    "build:shared": "npm run build --workspace=@preferred-natural-language/shared",
-    "build:cli": "npm run build --workspace=@preferred-natural-language/cli",
-    "build:all": "npm run build:shared && npm run build:cli",
-    "clean": "npm run clean --workspaces",
-    "install:cli-global": "npm install -g ./packages/cli",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
     "test": "jest",
-    "test:unit": "jest --config jest.unit.config.ts",
-    "test:integration": "jest --config jest.integration.config.ts",
-    "test:e2e": "jest --config jest.e2e.config.ts",
+    "test:unit": "jest --testPathPattern=__tests__/unit",
+    "test:integration": "jest --testPathPattern=__tests__/integration",
+    "test:e2e": "jest --testPathPattern=__tests__/e2e",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:pr": "npm run test:unit && npm run test:integration",
-    "test:slow": "npm run test:e2e",
-    "test:all": "npm-run-all test:unit test:integration test:e2e",
-    "dev:shared": "npm run dev --workspace=@preferred-natural-language/shared",
-    "dev:cli": "npm run dev --workspace=@preferred-natural-language/cli",
-    "install:all": "npm install && npm install --workspaces",
-    "test:performance": "echo 'Performance tests not implemented yet' && exit 0",
-    "lint": "echo 'Linting not configured yet' && exit 0",
-    "format": "echo 'Formatting not configured yet' && exit 0",
-    "format:check": "echo 'Format check not configured yet' && exit 0",
-    "type-check": "echo 'Type checking not configured yet' && exit 0",
-    "size-limit": "echo 'Size limit not configured yet' && exit 0",
-    "complexity-report": "echo 'Complexity report not implemented yet' && exit 0",
-    "build:docs": "echo 'Documentation build not implemented yet' && exit 0",
-    "publish": "npm publish --workspaces --if-present --access public"
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "commander": "^12.0.0",
+    "os-locale": "^6.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -49,7 +61,22 @@
     "ts-node": "^10.9.2",
     "jest-mock": "^29.5.0",
     "memfs": "^4.2.0",
-    "cross-env": "^7.0.3",
-    "npm-run-all": "^4.1.5"
+    "cross-env": "^7.0.3"
+  },
+  "files": [
+    "dist/**/*",
+    "bin/**/*",
+    ".claude-plugin/**/*",
+    "scripts/**/*",
+    "gemini-extension.json",
+    "GEMINI.md",
+    "commands/**/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/preferred-natural-language/preferred-natural-language.git"
   }
 }

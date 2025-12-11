@@ -1,0 +1,8 @@
+{
+  "name": "pnl",
+  "version": "3.0.0",
+  "description": "Interactive language detection and configuration tool - supports automatic detection and configuration of 70+ languages.",
+  "author": {
+    "name": "Preferred Natural Language"
+  }
+}

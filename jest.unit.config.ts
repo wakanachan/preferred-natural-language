@@ -18,28 +18,25 @@ const config: Config = {
     ]
   },
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-    '^@preferred-natural-language/shared(.*)$': '<rootDir>/packages/shared/src$1'
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   transformIgnorePatterns: [
     'node_modules/(?!(os-locale)/)'
   ],
   testMatch: [
-    '<rootDir>/packages/*/__tests__/unit/**/*.test.ts',
-    '<rootDir>/packages/*/__tests__/unit/**/*.spec.ts',
-    '<rootDir>/packages/*/__tests__/*.test.ts',
-    '<rootDir>/packages/*/__tests__/*.spec.ts'
+    '<rootDir>/__tests__/unit/**/*.test.ts',
+    '<rootDir>/__tests__/unit/**/*.spec.ts'
   ],
   testPathIgnorePatterns: [
     '/node_modules/',
     '/__tests__/integration/',
     '/__tests__/e2e/'
   ],
-  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
   collectCoverageFrom: [
-    'packages/*/src/**/*.ts',
-    '!packages/*/src/**/*.d.ts',
-    '!packages/*/src/**/index.ts'
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/**/index.ts'
   ],
   coverageThreshold: {
     global: {

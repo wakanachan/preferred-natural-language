@@ -98,8 +98,8 @@ language-code[-script-code][-country-code]
 
 要添加新语言支持：
 
-1. 将语言代码和名称添加到 `packages/shared/src/languageNames.ts`
-2. 在 `packages/shared/__tests__/languageNames.test.ts` 中添加适当的测试用例
+1. 将语言代码和名称添加到 `src/languageNames.ts`
+2. 在 `__tests__/unit/languageNames.test.ts` 中添加适当的测试用例
 3. 运行测试确保一切正常工作
 4. 提交拉取请求
 

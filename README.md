@@ -20,7 +20,7 @@ A cross-platform natural language preference detection tool for AI assistants th
 - 🌍 **70+ Languages**: Comprehensive language and regional variant support
 - 🔧 **Multiple Detection Methods**: Config files, environment variables, OS locale
 - 📝 **Full i18n**: CLI output in 10 languages (en, zh, ja, ko, ru, pt, es, fr, de)
-- 🧪 **100% Tested**: 65+ test cases, 100% statement coverage
+- 🧪 **100% Tested**: 100+ test cases, high coverage
 
 ## 🚀 Quick Start
 
@@ -31,7 +31,7 @@ A cross-platform natural language preference detection tool for AI assistants th
 npm install -g @preferred-natural-language/cli
 
 # Or use with npx (no installation)
-npx -p @preferred-natural-language/cli pnl detect
+npx @preferred-natural-language/cli detect
 ```
 
 ### CLI Usage
@@ -58,7 +58,7 @@ pnl mcp
 #### For Claude Code
 
 1. **Install the plugin**:
-   
+
    **From Marketplaces**:
    ```bash
    /plugin marketplace add wakanachan/preferred-natural-language
@@ -72,8 +72,8 @@ pnl mcp
    cd preferred-natural-language
 
    # Install as local marketplace
-   /plugin marketplace add ./dev-marketplace
-   /plugin install preferred-natural-language@local
+   /plugin marketplace add ./.claude-plugin
+   /plugin install preferred-natural-language@pnl-dev-marketplace
    ```
 
 2. **Restart Claude Code** to load the plugin (required after installation)
@@ -100,11 +100,11 @@ pnl mcp
    git clone https://github.com/wakanachan/preferred-natural-language
    cd preferred-natural-language
 
-   # Install from local path
-   gemini extensions install ./packages/gemini-extension
+   # Install from local path (root directory contains gemini-extension.json)
+   gemini extensions install .
 
-   # Or
-   gemini extensions link ./packages/gemini-extension
+   # Or use link command
+   gemini extensions link .
    ```
 
 2. **Restart Gemini CLI** to load the extension (changes only apply on restart)
@@ -117,8 +117,6 @@ pnl mcp
    # Or update all extensions at once
    gemini extensions update --all
    ```
-
-   > Note: Gemini creates a copy of the extension, so you need to run update to pull in changes
 
 4. **Automatic Language Detection**:
    - Gemini automatically detects your preferred language at session start
@@ -206,86 +204,69 @@ pnl set zh-CN
 
 ## 🏗️ Architecture
 
-### Monorepo Structure
+### Project Structure
 
 ```
 preferred-natural-language/
-├── packages/
-│   ├── shared/                    # Core detection library
-│   │   ├── src/
-│   │   │   ├── languageDetector.ts    # 5-level priority detection
-│   │   │   ├── types.ts               # Type definitions
-│   │   │   ├── languageNames.ts       # 70+ language mappings
-│   │   │   └── config.ts              # Configuration paths
-│   │   └── __tests__/                 # Unit tests
-│   │
-│   ├── cli/                       # CLI package + MCP server
-│   │   ├── src/
-│   │   │   ├── cli/                   # CLI commands
-│   │   │   │   ├── commands/          # detect, set, show, list
-│   │   │   │   ├── utils/             # Display utilities
-│   │   │   │   └── index.ts           # Commander.js entry
-│   │   │   ├── i18n/                  # Internationalization
-│   │   │   │   ├── index.ts           # I18n class
-│   │   │   │   └── locales/           # 10 language files
-│   │   │   └── mcp/                   # MCP server
-│   │   │       └── server.ts          # Resource + Prompt + Tools
-│   │   └── __tests__/                 # Unit + integration tests
-│   │
-│   ├── claude-plugin/             # Claude Code plugin (lightweight)
-│   │   ├── scripts/
-│   │   │   └── start-mcp.js           # Smart MCP launcher
-│   │   ├── commands/                  # Slash command definitions
-│   │   ├── plugin.json                # Plugin metadata
-│   │   └── .mcp.json                  # MCP server config
-│   │
-│   └── gemini-extension/          # Gemini CLI extension (lightweight)
-│       ├── scripts/
-│       │   └── start-mcp.js           # Smart MCP launcher
-│       ├── gemini-extension.json      # Extension metadata
-│       └── GEMINI.md                  # Context file for auto-detection
-│
-└── .github/workflows/             # CI/CD pipelines
+├── src/                          # Source code
+│   ├── languageDetector.ts       # Core 5-level priority detection
+│   ├── types.ts                  # Type definitions
+│   ├── languageNames.ts          # 70+ language mappings
+│   ├── config.ts                 # Configuration paths
+│   ├── index.ts                  # Unified exports
+│   ├── cli/                      # CLI commands (Commander.js)
+│   │   ├── commands/             # detect, set, show, list, mcp
+│   │   ├── utils/                # Display utilities
+│   │   └── index.ts              # CLI entry point
+│   ├── i18n/                     # Internationalization
+│   │   ├── index.ts              # I18n class
+│   │   └── locales/              # 10 language files
+│   └── mcp/                      # MCP server
+│       └── server.ts             # Resource + Prompt + Tools
+├── bin/
+│   └── pnl.js                    # CLI entry point
+├── __tests__/                    # Test suites
+│   ├── unit/                     # Unit tests
+│   ├── integration/              # Integration tests
+│   └── e2e/                      # End-to-end tests
+├── .claude-plugin/               # Claude Code plugin (marketplace)
+│   ├── marketplace.json          # Marketplace config
+│   └── pnl/                      # Plugin root
+│       ├── .claude-plugin/plugin.json
+│       ├── .mcp.json             # MCP server config
+│       ├── commands/             # Slash commands
+│       └── scripts/start-mcp.js  # Smart MCP launcher
+├── gemini-extension.json         # Gemini CLI extension manifest
+├── GEMINI.md                     # Gemini context file
+├── commands/                     # Gemini slash commands (.toml)
+└── scripts/start-mcp.js          # Shared MCP launcher
 ```
 
 ### Design Philosophy
 
-- **Shared Core**: All detection logic in `@preferred-natural-language/shared`
-- **CLI Package**: Complete CLI + MCP server in `@preferred-natural-language/cli`
-- **Lightweight Plugins**: Claude/Gemini packages are thin wrappers (config + startup scripts)
-- **No Code Duplication**: Plugin layers delegate to CLI package via smart launchers
+- **Single Package**: All code in `@preferred-natural-language/cli`
+- **Lightweight Plugins**: Claude/Gemini integrations are configuration layers
+- **Smart Launchers**: Plugins use `pnl mcp` subcommand via smart launchers
+- **No Code Duplication**: Plugin layers delegate to CLI package
 
 ## 🧪 Testing
 
 ### Run Tests
 
 ```bash
-# All tests (unit + integration)
+# All tests (unit + integration + e2e)
 npm test
 
 # Specific test suites
 npm run test:unit           # Fast unit tests
 npm run test:integration    # Integration tests
-npm run test:e2e           # End-to-end tests (Phase 4)
+npm run test:e2e            # End-to-end tests
 
 # Development
 npm run test:watch          # Watch mode
 npm run test:coverage       # With coverage report
-npm run test:ci            # CI mode (no watch)
+npm run test:ci             # CI mode (no watch)
 ```
-
-### Test Coverage
-
-Current coverage (Phase 2B completed):
-
-| Package | Statements | Branches | Functions | Lines |
-|---------|-----------|----------|-----------|-------|
-| **CLI** | **100%** | **72.72%** | **100%** | **100%** |
-| Commands | 100% | 80% | 100% | 100% |
-| i18n | 100% | 100% | 100% | 100% |
-| Utils | 100% | 66.66% | 100% | 100% |
-
-**65 test cases, all passing** ✅
 
 ## 🛠️ Development
 
@@ -296,11 +277,11 @@ Current coverage (Phase 2B completed):
 git clone https://github.com/wakanachan/preferred-natural-language.git
 cd preferred-natural-language
 
-# Install dependencies (monorepo)
+# Install dependencies
 npm install
 
-# Build packages
-npm run build              # Build shared + cli
+# Build
+npm run build
 
 # Run tests
 npm test
@@ -310,48 +291,31 @@ npm test
 
 ```bash
 # Building
-npm run build              # Build shared + cli packages
-npm run build:shared       # Build shared core only
-npm run build:cli          # Build CLI package only
-
-# Development (watch mode)
-npm run dev:shared         # Watch shared package
-npm run dev:cli            # Watch CLI package
+npm run build              # Build project
 
 # Testing
 npm run test:unit          # Unit tests
 npm run test:integration   # Integration tests
+npm run test:e2e           # E2E tests
 npm run test:coverage      # With coverage
 npm run test:pr            # PR validation (unit + integration)
-
-# Installation
-npm run install:cli-global # Install CLI globally from source
 ```
 
 ## 📖 API Reference
 
-### CLI Package
+### Programmatic Usage
 
 ```typescript
-import { LanguageDetector } from '@preferred-natural-language/shared';
-import { I18n } from '@preferred-natural-language/cli/i18n';
-import { DetectCommand } from '@preferred-natural-language/cli/commands';
+import { LanguageDetector, SUPPORTED_LANGUAGES } from '@preferred-natural-language/cli';
 
 // Detect language
 const detector = new LanguageDetector();
 const result = await detector.detect();
 // { language: 'zh-CN', source: 'os-locale', confidence: 'high' }
 
-// Initialize i18n
-const i18n = new I18n(result.language, result.confidence);
-const message = i18n.t('detect.result', {
-  languageName: '简体中文',
-  language: 'zh-CN'
-});
-
-// Use command classes
-const command = new DetectCommand(detector, i18n);
-const output = await command.execute();
+// List supported languages
+console.log(SUPPORTED_LANGUAGES);
+// { 'en': 'English', 'zh-CN': 'Chinese (Simplified)', ... }
 ```
 
 ### MCP Server API
@@ -368,8 +332,6 @@ The MCP server provides:
 - `detect-language` - Detect current language
 - `set-language(language, fallback?)` - Set language preference
 - `list-languages()` - List all 70+ supported languages
-
-**Auto-Detection**: MCP server declares `resources: { subscribe: true }` for automatic context injection.
 
 ### Type Definitions
 
@@ -412,7 +374,7 @@ git commit -m "feat: 添加新功能描述
 
 🤖 Generated with Claude Code
 
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
 
 ## 📄 License

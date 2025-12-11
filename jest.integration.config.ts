@@ -18,17 +18,16 @@ const config: Config = {
     ]
   },
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-    '^@preferred-natural-language/shared(.*)$': '<rootDir>/packages/shared/src$1'
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   transformIgnorePatterns: [
     'node_modules/(?!(os-locale)/)'
   ],
   testMatch: [
-    '<rootDir>/packages/*/__tests__/integration/**/*.test.ts',
-    '<rootDir>/packages/*/__tests__/integration/**/*.spec.ts'
+    '<rootDir>/__tests__/integration/**/*.test.ts',
+    '<rootDir>/__tests__/integration/**/*.spec.ts'
   ],
-  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
   collectCoverageFrom: []
 };
 
